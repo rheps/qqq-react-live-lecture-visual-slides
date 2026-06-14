@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qqq-live 컴포넌트 카탈로그 (번호별)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --blue:#3B82F6; --sky:#0EA5E9; --teal:#14B8A6; --emerald:#10B981;
+    --amber:#F59E0B; --rose:#F43F5E; --ink:#0F172A; --mut:#475569; --grid:#E2E8F0;
+  }
+  *{box-sizing:border-box; word-break:keep-all; overflow-wrap:break-word;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:"Pretendard","Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
+    color:var(--ink);
+    background:linear-gradient(135deg,#EFF6FF 0%,#F0FDFA 50%,#F0F9FF 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+  }
+  /* 떠다니는 배경 blob */
+  .blob{position:fixed; border-radius:50%; filter:blur(60px); z-index:0; pointer-events:none;}
+  .blob1{top:-12vh; left:-8vw; width:46vh; height:46vh;
+    background:radial-gradient(circle,rgba(59,130,246,.22) 0%,transparent 70%); animation:float1 20s ease-in-out infinite;}
+  .blob2{bottom:-14vh; right:-6vw; width:52vh; height:52vh;
+    background:radial-gradient(circle,rgba(20,184,166,.18) 0%,transparent 70%); animation:float2 24s ease-in-out infinite;}
+  @keyframes float1{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,30px) scale(1.06)}}
+  @keyframes float2{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-40px,-26px) scale(1.08)}}
+
+  .wrap{position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:40px 28px 120px;}
+
+  header.hero{text-align:center; margin-bottom:14px;}
+  header.hero h1{font-size:42px; font-weight:900; letter-spacing:-.03em; margin:0 0 10px;}
+  header.hero h1 .ac{
+    color:var(--blue);
+    background:linear-gradient(135deg,var(--blue),var(--sky));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  header.hero p{font-size:17px; font-weight:500; color:var(--mut); margin:6px auto; max-width:760px; line-height:1.6;}
+  .legend{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0 6px;}
+  .lg{font-size:13px; font-weight:700; padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.7);
+     border:1px solid rgba(255,255,255,.6); box-shadow:0 4px 14px rgba(0,0,0,.04);}
+  .lg .nw{color:var(--emerald);} .lg .rq{color:var(--amber);}
+
+  /* 카테고리 점프 내비 */
+  nav.jump{position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+    padding:14px 8px; margin:18px -8px 26px;
+    background:rgba(240,249,255,.78); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border-radius:16px; border:1px solid rgba(255,255,255,.6);}
+  nav.jump a{font-size:14px; font-weight:700; text-decoration:none; color:var(--mut);
+    padding:6px 13px; border-radius:999px; transition:all .2s;}
+  nav.jump a:hover{color:#fff; background:var(--blue); box-shadow:0 6px 16px rgba(59,130,246,.35);}
+
+  .cat{margin:46px 0 20px; display:flex; align-items:center; gap:14px;}
+  .cat h2{font-size:26px; font-weight:900; letter-spacing:-.02em; margin:0;}
+  .cat .rng{font-size:15px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--blue),var(--sky));
+    padding:4px 14px; border-radius:999px;}
+  .cat .ln{flex:1; height:2px; background:linear-gradient(90deg,var(--grid),transparent);}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(370px,1fr)); gap:20px;}
+
+  .comp{
+    position:relative;
+    background:rgba(255,255,255,.66); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.55); border-radius:20px;
+    box-shadow:0 8px 32px rgba(0,0,0,.05), 0 0 22px rgba(59,130,246,.10);
+    padding:18px 18px 20px;
+    opacity:0; transform:scale(.92) translateY(16px);
+    transition:opacity .5s ease, transform .6s cubic-bezier(.175,.885,.32,1.275);
+  }
+  .comp.vis{opacity:1; transform:scale(1) translateY(0);}
+  .comp-head{display:flex; align-items:flex-start; gap:13px; margin-bottom:8px;}
+  .num{flex:none; width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center;
+    font-size:21px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--blue),var(--sky));
+    box-shadow:0 6px 16px rgba(59,130,246,.35);}
+  .names{flex:1; min-width:0;}
+  .names .en{font-size:19px; font-weight:900; letter-spacing:-.01em; line-height:1.2;}
+  .names .ko{font-size:14px; font-weight:600; color:var(--mut); margin-top:1px;}
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin:2px 0 8px;}
+  .t{font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:7px;}
+  .t-type{background:#EEF2FF; color:#4338CA; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .t-new{background:rgba(16,185,129,.14); color:#059669;}
+  .t-rq{background:rgba(245,158,11,.16); color:#B45309;}
+  .use{font-size:13.5px; font-weight:500; color:var(--mut); line-height:1.5; margin:0 0 13px;}
+  .note{font-size:12.5px; font-weight:600; color:#B45309; line-height:1.45; margin:-6px 0 12px;
+    background:rgba(245,158,11,.10); border-left:3px solid var(--amber); padding:7px 10px; border-radius:0 8px 8px 0;}
+
+  .stage{
+    position:relative; height:200px; border-radius:14px; overflow:hidden;
+    background:linear-gradient(135deg,#F4F9FF 0%,#F2FCFB 100%);
+    border:1px solid rgba(59,130,246,.10);
+    display:flex; align-items:center; justify-content:center; padding:14px;
+  }
+  .stage > *{max-width:100%; max-height:100%;}
+
+  /* 프리뷰 공용 미니 부품 */
+  .pv-chip{display:inline-block; background:#fff; border-radius:999px; padding:4px 11px; font-weight:700; font-size:12.5px; margin:3px; box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .pv-card{background:rgba(255,255,255,.85); backdrop-filter:blur(6px); border-radius:11px; padding:9px 11px; box-shadow:0 6px 16px rgba(0,0,0,.06);}
+  footer{text-align:center; margin-top:70px; font-size:13px; color:var(--mut); font-weight:500;}
+  @media(max-width:520px){ .grid{grid-template-columns:1fr;} header.hero h1{font-size:32px;} }
+</style>
+</head>
+<body>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
+<div class="wrap">
+  <header class="hero">
+    <h1><span class="ac">qqq-live</span> 컴포넌트 카탈로그</h1>
+    <p>강의용 슬라이드 스킬에서 쓸 수 있는 모든 시각 컴포넌트를 번호로 정리했어요.
+       보고 마음에 드는 번호를 <b>"23번으로 해줘"</b>처럼 말하면 그대로 만들어 드립니다.</p>
+    <p style="font-size:14px;">테마는 <b>Modern Glassy Light</b> (블루·하늘·틸 파스텔 + 유리 카드 + spring-pop).
+       아래 미리보기는 모양 확인용 축소판이라 글씨가 작지만, 실제 슬라이드는 모든 글자 24px 이상으로 만들어집니다.</p>
+    <div class="legend">
+      <span class="lg"><span class="nw">NEW</span> = 이번에 추가 (PowerPoint 기본 도표)</span>
+      <span class="lg"><span class="rq">요청시</span> = 가독성 때문에 기본 추천에선 빠지지만 번호로 고르면 사용</span>
+    </div>
+  </header>
+
+  <nav class="jump" id="nav"></nav>
+  <div id="root"></div>
+
+  <footer>qqq-react-live-lecture-visual-slides · component-gallery.html · 번호 기준표는 references/component-registry.md</footer>
+</div>
+
+<script>
+// ===== 토큰 =====
+const BL="#3B82F6", SK="#0EA5E9", TL="#14B8A6", EM="#10B981", AM="#F59E0B", RO="#F43F5E",
+      INK="#0F172A", MUT="#475569", GRID="#E2E8F0";
+const PAL=[BL,EM,AM,RO,SK,TL];
+const col=i=>PAL[i%PAL.length];
+
+// ===== 공용 빌더 =====
+const S=(w,h,inner)=>`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;max-height:172px">${inner}</svg>`;
+const card=(html,fg,extra="")=>`<div style="background:rgba(255,255,255,.88);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.7);border-top:3px solid ${fg};border-radius:11px;box-shadow:0 6px 16px rgba(0,0,0,.06),0 0 14px ${fg}22;padding:9px 11px;${extra}">${html}</div>`;
+const chip=(t,fg)=>`<span style="display:inline-block;background:#fff;color:${fg};border:1px solid ${fg}55;border-radius:999px;padding:4px 11px;font-weight:700;font-size:12.5px;box-shadow:0 2px 8px ${fg}22;margin:3px">${t}</span>`;
+const arrow=(fg=MUT)=>`<span style="color:${fg};font-size:22px;font-weight:900;margin:0 2px">→</span>`;
+const emo=(e,sz=34)=>`<span style="font-size:${sz}px;line-height:1">${e}</span>`;
+// 막대 (세로)
+function vbars(data){ // [{v,fg,label}]
+  const W=240,H=150,pad=24,base=H-26, max=Math.max(...data.map(d=>d.v));
+  const bw=26, gap=(W-pad*2-data.length*bw)/(data.length+1);
+  let r=`<line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="${GRID}" stroke-width="2"/>`;
+  data.forEach((d,i)=>{ const x=pad+gap+i*(bw+gap); const h=(d.v/max)*(base-14); const y=base-h;
+    r+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="5" fill="${d.fg}"/>`;
+    r+=`<text x="${x+bw/2}" y="${y-6}" text-anchor="middle" font-size="13" font-weight="800" fill="${d.fg}">${d.v}</text>`;
+    r+=`<text x="${x+bw/2}" y="${base+15}" text-anchor="middle" font-size="11" font-weight="700" fill="${MUT}">${d.label}</text>`;
+  });
+  return S(W,H,r);
+}
+
+// ===== 컴포넌트 정의 =====
+// {n,type,en,ko,use,cat,tag:'new'|'rq', note, render:()=>html}
+const C=[
+// ---- A 텍스트 강조 ----
+{n:1,type:"hero-title",en:"HeroTitle",ko:"표지 제목",cat:"A",use:"덱 표지, 강한 첫인상. 큰 제목 + 부제.",render:()=>`<div style="text-align:center"><div style="font-size:13px;letter-spacing:.2em;color:${MUT};font-weight:700">LECTURE 01</div><div style="font-size:30px;font-weight:900;letter-spacing:-.03em;margin-top:6px">소비자에서 <span style="color:${BL}">생산자</span>로</div><div style="font-size:15px;color:${MUT};font-weight:600;margin-top:8px">AI 시대의 교사 역할</div></div>`},
+{n:2,type:"big-title",en:"BigTitle",ko:"섹션 제목",cat:"A",use:"새 섹션 시작 알림. 제목만 화면 가득.",render:()=>`<div style="font-size:34px;font-weight:900;letter-spacing:-.03em;text-align:center">제 2 부<br><span style="color:${BL}">실습</span></div>`},
+{n:3,type:"big-keyword",en:"BigKeyword",ko:"핵심 단어",cat:"A",use:"핵심 단어 하나를 강하게 각인.",render:()=>`<div style="text-align:center"><div style="font-size:44px;font-weight:900;color:${BL};border-bottom:5px solid ${SK};display:inline-block;padding-bottom:4px">진입장벽</div><div style="font-size:14px;color:${MUT};font-weight:600;margin-top:12px">노동/지식을 가르는 축</div></div>`},
+{n:4,type:"key-message",en:"KeyMessage",ko:"핵심 문장",cat:"A",use:"핵심 주장 한 문장. 핵심어 색강조.",render:()=>`<div style="font-size:24px;font-weight:800;line-height:1.5;text-align:center">화면은 <span style="color:${BL}">3초 안에</span><br>이해되어야 한다</div>`},
+{n:5,type:"quote-focus",en:"QuoteFocus",ko:"인용문",cat:"A",use:"인용문·명언·역사적 선언.",render:()=>`<div style="text-align:center"><div style="font-size:40px;color:${SK};font-weight:900;line-height:0">“</div><div style="font-size:19px;font-weight:700;line-height:1.5">아는 것이 힘이다</div><div style="font-size:13px;color:${MUT};font-weight:600;margin-top:10px;text-align:right">— 프랜시스 베이컨</div></div>`},
+{n:6,type:"section-divider",en:"SectionDivider",ko:"파트 전환",cat:"A",use:"파트 전환 (1일차→2일차).",render:()=>`<div style="text-align:center"><div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,${BL},${SK});color:#fff;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">3</div><div style="font-size:22px;font-weight:900">정리와 평가</div><div style="font-size:12px;color:${MUT};font-weight:600;margin-top:6px">이전: 실습 · 다음: 마무리</div></div>`},
+{n:7,type:"big-question",en:"BigQuestion",ko:"핵심 발문",cat:"A",use:"수업 핵심 질문 하나.",render:()=>`<div style="text-align:center"><div style="font-size:46px;font-weight:900;color:${BL}">?</div><div style="font-size:21px;font-weight:800;line-height:1.45;margin-top:6px">AI는 교사를<br>대체할 수 있을까?</div></div>`},
+
+// ---- B 목록 ----
+{n:8,type:"three-keywords",en:"ThreeKeywords",ko:"3 키워드",cat:"B",use:"핵심 요소 3개. 좌→중→우 등장.",render:()=>`<div style="display:flex;gap:9px;align-items:stretch">${[["🔍","사실성",BL],["🧲","관련성",EM],["⚖️","충분성",AM]].map(([e,t,f])=>card(`<div style="text-align:center"><div style="font-size:26px">${e}</div><div style="font-size:14px;font-weight:800;margin-top:4px">${t}</div></div>`,f,"min-width:78px")).join("")}</div>`},
+{n:9,type:"four-card",en:"FourCard",ko:"4 카드",cat:"B",use:"위계 없는 병렬 3~4개. 2×2.",render:()=>`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${[["①","계획",BL],["②","실행",EM],["③","점검",AM],["④","개선",RO]].map(([n,t,f])=>card(`<div style="font-size:13px;font-weight:800"><span style="color:${f}">${n}</span> ${t}</div>`,f)).join("")}</div>`},
+{n:10,type:"keyword-cluster",en:"KeywordCluster",ko:"용어 무리",cat:"B",use:"관계 느슨한 용어 여러 개.",render:()=>`<div style="text-align:center;line-height:1.9">${["민주주의","시민","참여","권리","의무","투표","공론장"].map((t,i)=>chip(t,col(i))).join("")}</div>`},
+{n:11,type:"term-chip-group",en:"TermChipGroup",ko:"용어 칩",cat:"B",use:"핵심 어휘 5~10개 칩 모음.",render:()=>`<div style="text-align:center;line-height:2">${["광합성","엽록체","포도당","산소","이산화탄소","물"].map((t,i)=>chip(t,col(i))).join("")}</div>`},
+{n:12,type:"numbered-steps",en:"NumberedSteps",ko:"번호 목록",cat:"B",use:"번호 매긴 절차 1~5, 한눈에.",render:()=>`<div style="display:flex;flex-direction:column;gap:7px;width:100%;max-width:240px">${[["1","자료 수집"],["2","분석"],["3","발표"]].map(([n,t],i)=>`<div style="display:flex;align-items:center;gap:9px"><div style="width:26px;height:26px;border-radius:50%;background:${col(i)};color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">${n}</div><div style="font-size:14px;font-weight:700">${t}</div></div>`).join("")}</div>`},
+{n:13,type:"checklist",en:"Checklist",ko:"체크리스트",cat:"B",use:"할 일·완료 점검표.",render:()=>`<div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:230px">${[["✓","주제 정하기",EM],["✓","개요 작성",EM],["○","발표 준비",MUT]].map(([c,t,f])=>`<div style="display:flex;align-items:center;gap:9px"><div style="width:22px;height:22px;border-radius:6px;border:2px solid ${f};color:${f};font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">${c}</div><div style="font-size:14px;font-weight:700;color:${f===MUT?MUT:INK}">${t}</div></div>`).join("")}</div>`},
+
+// ---- C 비교·관계 ----
+{n:14,type:"split-compare",en:"SplitCompare",ko:"좌우 비교",cat:"C",use:"A vs B 반반 분할 비교.",render:()=>`<div style="display:flex;gap:10px;align-items:stretch;width:100%">${[["소비자형","받기만",RO],["생산자형","만들기",BL]].map(([t,s,f])=>card(`<div style="text-align:center"><div style="font-size:15px;font-weight:900;color:${f}">${t}</div><div style="font-size:12px;color:${MUT};font-weight:600;margin-top:4px">${s}</div></div>`,f,"flex:1")).join("")}</div>`},
+{n:15,type:"before-after-panel",en:"BeforeAfterPanel",ko:"전·후",cat:"C",use:"변화 전·후, 개선 전·후.",render:()=>`<div style="display:flex;gap:6px;align-items:center;width:100%">${card(`<div style="text-align:center"><div style="font-size:11px;color:${MUT};font-weight:700">BEFORE</div><div style="font-size:15px;font-weight:800;color:${RO}">손글씨</div></div>`,RO,"flex:1")}${arrow(BL)}${card(`<div style="text-align:center"><div style="font-size:11px;color:${MUT};font-weight:700">AFTER</div><div style="font-size:15px;font-weight:800;color:${BL}">디지털</div></div>`,BL,"flex:1")}</div>`},
+{n:16,type:"pros-cons-board",en:"ProsConsBoard",ko:"장단점",cat:"C",use:"찬반·장단점·기회/위협.",render:()=>`<div style="display:flex;gap:10px;width:100%">${card(`<div style="font-size:13px;font-weight:900;color:${EM}">＋ 장점</div><div style="font-size:11.5px;color:${MUT};font-weight:600;margin-top:5px;line-height:1.5">· 빠르다<br>· 저렴하다</div>`,EM,"flex:1")}${card(`<div style="font-size:13px;font-weight:900;color:${RO}">－ 단점</div><div style="font-size:11.5px;color:${MUT};font-weight:600;margin-top:5px;line-height:1.5">· 부정확<br>· 의존</div>`,RO,"flex:1")}</div>`},
+{n:17,type:"contrast",en:"ContrastKeyword",ko:"VS 대비",cat:"C",use:"키워드 수준 대비, 가운데 VS.",render:()=>`<div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px;font-weight:900;color:${BL}">아날로그</div><div style="font-size:16px;font-weight:900;color:#fff;background:${INK};border-radius:999px;padding:5px 11px">VS</div><div style="font-size:22px;font-weight:900;color:${RO}">디지털</div></div>`},
+{n:18,type:"two-by-two-matrix",en:"TwoByTwoMatrix",ko:"2×2 행렬",cat:"C",use:"2축 분류, 중요도×긴급도.",render:()=>{const cells=[["급함·중요",RO],["안급함·중요",BL],["급함·덜중요",AM],["안급함·덜중요",MUT]];return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:150px;height:120px">${cells.map(([t,f])=>`<div style="background:${f}1a;border:1.5px solid ${f}55;border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10.5px;font-weight:800;color:${f};padding:3px">${t}</div>`).join("")}</div>`}},
+
+// ---- D 흐름·과정 ----
+{n:19,type:"step-flow",en:"StepFlow",ko:"가로 단계",cat:"D",use:"순서 있는 과정, 실습 절차.",render:()=>`<div style="display:flex;align-items:center;gap:3px">${[["1","관찰",BL],["2","가설",EM],["3","검증",AM]].map(([n,t,f],i)=>`${i?arrow():""}<div style="text-align:center"><div style="width:34px;height:34px;border-radius:10px;background:${f};color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto">${n}</div><div style="font-size:12px;font-weight:700;margin-top:5px">${t}</div></div>`).join("")}</div>`},
+{n:20,type:"vertical-step-flow",en:"VerticalStepFlow",ko:"세로 단계",cat:"D",use:"세로 단계 + 빛나는 연결선.",render:()=>`<div style="display:flex;flex-direction:column;align-items:center;gap:0">${[["🧭","도입",BL],["🌊","전개",EM],["🚀","정리",AM]].map(([e,t,f],i)=>`${i?`<div style="width:3px;height:14px;background:linear-gradient(${f},${f}55)"></div>`:""}<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);border:1px solid ${f}44;border-radius:10px;padding:5px 12px;box-shadow:0 4px 12px ${f}22"><span style="font-size:18px">${e}</span><span style="font-size:13px;font-weight:800">${t}</span></div>`).join("")}</div>`},
+{n:21,type:"horizontal-flow",en:"HorizontalFlow",ko:"선형 흐름",cat:"D",use:"3~5단계 선형 파이프라인.",render:()=>`<div style="display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center">${["입력","처리","저장","출력"].map((t,i)=>`${i?arrow():""}<div style="background:${col(i)}1a;color:${col(i)};border:1.5px solid ${col(i)}55;border-radius:9px;padding:7px 11px;font-size:12.5px;font-weight:800">${t}</div>`).join("")}</div>`},
+{n:22,type:"flow",en:"Flow",ko:"메커니즘",cat:"D",use:"입력→변환장치→결과. 가운데만 강조.",render:()=>`<div style="display:flex;align-items:center;gap:4px"><div style="text-align:center"><div style="font-size:26px">🤖</div><div style="font-size:11px;font-weight:700">AI 생산</div></div>${arrow(BL)}${card(`<div style="text-align:center"><div style="font-size:13px;font-weight:900;color:${BL}">분배 장치</div><div style="font-size:10.5px;color:${MUT};font-weight:600;margin-top:2px">AI세 · UBC</div></div>`,BL)}${arrow(BL)}<div style="text-align:center"><div style="font-size:26px">👥</div><div style="font-size:11px;font-weight:700">기본소득</div></div></div>`},
+{n:23,type:"cause-effect-chain",en:"CauseEffectChain",ko:"원인→결과",cat:"D",use:"원인→결과 사슬, 역사 흐름.",render:()=>`<div style="display:flex;align-items:center;gap:1px;flex-wrap:wrap;justify-content:center">${["흉년","세금 부담","민란","왕조 교체"].map((t,i)=>`${i?`<span style="color:${RO};font-size:20px;font-weight:900">⇒</span>`:""}<div style="background:#fff;border-radius:8px;padding:6px 9px;font-size:11.5px;font-weight:800;box-shadow:0 3px 9px rgba(0,0,0,.07)">${t}</div>`).join("")}</div>`},
+{n:24,type:"chevron-process",en:"ChevronProcess",ko:"갈매기 단계",cat:"D",tag:"new",use:"화살표 리본 단계. PPT 갈매기형 프로세스.",render:()=>{const st=["기획","제작","검수","배포"];const w=300,h=58,cw=72,tip=14;let r="";st.forEach((t,i)=>{const x=i*(cw-tip+6);const f=col(i);r+=`<path d="M${x} 8 H${x+cw-tip} L${x+cw} ${h/2} L${x+cw-tip} ${h-8} H${x} L${x+tip} ${h/2} Z" fill="${f}" opacity=".9"/><text x="${x+cw/2}" y="${h/2+5}" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">${t}</text>`;});return S(w,h,r)}},
+{n:25,type:"funnel-list",en:"FunnelList",ko:"깔때기 목록",cat:"D",tag:"new",use:"단계마다 좁아지는 깔때기형 목록 (필터링).",render:()=>{const st=[["전체 지원자",BL],["서류 통과",EM],["면접 통과",AM],["최종 합격",RO]];return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:100%">${st.map(([t,f],i)=>`<div style="width:${100-i*20}%;background:${f};color:#fff;border-radius:7px;padding:5px;text-align:center;font-size:11.5px;font-weight:800">${t}</div>`).join("")}</div>`}},
+
+// ---- E 주기 ----
+{n:26,type:"loop-diagram",en:"LoopDiagram / CycleDiagram",ko:"순환 루프",cat:"E",use:"반복 개선 사이클, PDCA.",render:()=>{const cx=85,cy=85,R=56;const st=[["P",BL],["D",EM],["C",AM],["A",RO]];let r=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${GRID}" stroke-width="2" stroke-dasharray="5 5"/>`;st.forEach(([t,f],i)=>{const a=-90+i*90;const x=cx+R*Math.cos(a*Math.PI/180),y=cy+R*Math.sin(a*Math.PI/180);r+=`<circle cx="${x}" cy="${y}" r="17" fill="${f}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">${t}</text>`;});r+=`<path d="M${cx+R-2} ${cy-12} l8 8 l-12 2 z" fill="${BL}"/>`;return S(170,170,r)}},
+{n:27,type:"gear-cycle",en:"GearCycle",ko:"톱니바퀴",cat:"E",tag:"new",use:"맞물려 도는 톱니바퀴. PPT 기어 SmartArt.",render:()=>{const gear=(cx,cy,R,f,lbl)=>{let teeth="";for(let i=0;i<10;i++){const a=i*36*Math.PI/180;const x1=cx+R*Math.cos(a),y1=cy+R*Math.sin(a),x2=cx+(R+7)*Math.cos(a),y2=cy+(R+7)*Math.sin(a);teeth+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${f}" stroke-width="6"/>`;}return `${teeth}<circle cx="${cx}" cy="${cy}" r="${R}" fill="${f}"/><circle cx="${cx}" cy="${cy}" r="${R*.4}" fill="#fff"/><text x="${cx}" y="${cy+R+20}" text-anchor="middle" font-size="12" font-weight="800" fill="${f}">${lbl}</text>`;};return S(220,150,gear(55,62,30,BL,"투입")+gear(140,80,34,EM,"전환")+gear(60,120,18,AM,"산출"))}},
+{n:28,type:"segmented-cycle",en:"SegmentedCycle",ko:"블록 순환",cat:"E",tag:"new",use:"호(arc) 블록이 도는 순환. PPT 블록 주기.",render:()=>{const cx=85,cy=85,R=58,r0=34;const st=[["봄",EM],["여름",RO],["가을",AM],["겨울",BL]];let p="";const arc=(a0,a1,fill)=>{const rad=d=>d*Math.PI/180;const x0=cx+R*Math.cos(rad(a0)),y0=cy+R*Math.sin(rad(a0)),x1=cx+R*Math.cos(rad(a1)),y1=cy+R*Math.sin(rad(a1)),x2=cx+r0*Math.cos(rad(a1)),y2=cy+r0*Math.sin(rad(a1)),x3=cx+r0*Math.cos(rad(a0)),y3=cy+r0*Math.sin(rad(a0));return `<path d="M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r0} ${r0} 0 0 0 ${x3} ${y3} Z" fill="${fill}"/>`;};st.forEach(([t,f],i)=>{const a0=-88+i*90,a1=a0+84;p+=arc(a0,a1,f);const am=(a0+a1)/2*Math.PI/180,rm=(R+r0)/2;p+=`<text x="${cx+rm*Math.cos(am)}" y="${cy+rm*Math.sin(am)+4}" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">${t}</text>`;});return S(170,170,p)}},
+
+// ---- F 계층·구조 ----
+{n:29,type:"concept-map",en:"ConceptMap",ko:"개념망",cat:"F",use:"개념 연결 관계망.",render:()=>{const nodes=[[85,30,"기후",BL],[30,110,"해류",EM],[140,110,"바람",AM],[85,150,"강수",RO]];let r=`<line x1="85" y1="30" x2="30" y2="110" stroke="${GRID}" stroke-width="2"/><line x1="85" y1="30" x2="140" y2="110" stroke="${GRID}" stroke-width="2"/><line x1="30" y1="110" x2="85" y2="150" stroke="${GRID}" stroke-width="2"/><line x1="140" y1="110" x2="85" y2="150" stroke="${GRID}" stroke-width="2"/>`;nodes.forEach(([x,y,t,f])=>{r+=`<circle cx="${x}" cy="${y}" r="20" fill="${f}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${t}</text>`;});return S(180,175,r)}},
+{n:30,type:"actor-map",en:"ActorMap",ko:"인물 관계도",cat:"F",use:"인물·집단 협력/대립 구도.",render:()=>{let r=`<line x1="50" y1="55" x2="140" y2="55" stroke="${RO}" stroke-width="3" stroke-dasharray="4 3"/><text x="95" y="46" text-anchor="middle" font-size="10" font-weight="800" fill="${RO}">대립</text><line x1="50" y1="55" x2="95" y2="135" stroke="${EM}" stroke-width="3"/><text x="58" y="105" font-size="10" font-weight="800" fill="${EM}">협력</text>`;[[50,55,"왕",BL],[140,55,"귀족",RO],[95,135,"백성",EM]].forEach(([x,y,t,f])=>{r+=`<circle cx="${x}" cy="${y}" r="22" fill="${f}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${t}</text>`;});return S(190,170,r)}},
+{n:31,type:"pyramid",en:"Pyramid",ko:"피라미드",cat:"F",use:"계층·위계 (아래 넓음).",render:()=>{const lv=[["자아실현",RO],["존중",AM],["소속",EM],["안전·생존",BL]];return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;max-width:220px">${lv.map(([t,f],i)=>`<div style="width:${40+i*20}%;background:${f};color:#fff;text-align:center;font-size:11.5px;font-weight:800;padding:4px;border-radius:4px">${t}</div>`).join("")}</div>`}},
+{n:32,type:"inverted-pyramid",en:"InvertedPyramid",ko:"역피라미드",cat:"F",tag:"new",use:"위가 넓은 역피라미드 (점점 좁히기·핵심 추출).",render:()=>{const lv=[["전체 정보",BL],["선별",EM],["핵심",AM]];return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;max-width:220px">${lv.map(([t,f],i)=>`<div style="width:${100-i*30}%;background:${f};color:#fff;text-align:center;font-size:12px;font-weight:800;padding:6px;border-radius:4px">${t}</div>`).join("")}</div>`}},
+{n:33,type:"trinity",en:"Trinity",ko:"삼위일체",cat:"F",use:"셋이 모여 하나 (통합). 정확히 3개.",render:()=>{let r=`<polygon points="85,22 28,128 142,128" fill="none" stroke="${GRID}" stroke-width="2"/><line x1="85" y1="22" x2="85" y2="92" stroke="${BL}55" stroke-width="2"/><line x1="28" y1="128" x2="85" y2="92" stroke="${EM}55" stroke-width="2"/><line x1="142" y1="128" x2="85" y2="92" stroke="${AM}55" stroke-width="2"/>`;[[85,22,"🔍",BL],[28,128,"🧲",EM],[142,128,"⚖️",AM]].forEach(([x,y,e,f])=>{r+=`<circle cx="${x}" cy="${y}" r="18" fill="#fff" stroke="${f}" stroke-width="2.5"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="16">${e}</text>`;});r+=`<circle cx="85" cy="92" r="20" fill="${BL}"/><text x="85" y="97" text-anchor="middle" font-size="14">🛡️</text>`;return S(175,155,r)}},
+{n:34,type:"tree-diagram",en:"TreeDiagram",ko:"트리·조직도",cat:"F",use:"조직도, 분류 트리.",render:()=>{let r=`<line x1="95" y1="40" x2="45" y2="95" stroke="${GRID}" stroke-width="2"/><line x1="95" y1="40" x2="145" y2="95" stroke="${GRID}" stroke-width="2"/>`;const box=(x,y,t,f)=>`<rect x="${x-32}" y="${y-15}" width="64" height="30" rx="7" fill="${f}"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${t}</text>`;return S(190,130,r+box(95,25,"척추동물",BL)+box(45,108,"포유류",EM)+box(145,108,"조류",AM))}},
+{n:35,type:"hub-spoke",en:"HubSpoke / Mindmap",ko:"방사형",cat:"F",tag:"new",use:"한 중심에서 여러 갈래 방사. 마인드맵.",render:()=>{const cx=95,cy=85;const sp=[[95,22,"읽기",EM],[160,85,"쓰기",AM],[95,148,"말하기",RO],[30,85,"듣기",SK]];let r="";sp.forEach(([x,y,t,f])=>{r+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${f}" stroke-width="2.5"/>`;});sp.forEach(([x,y,t,f])=>{r+=`<circle cx="${x}" cy="${y}" r="17" fill="#fff" stroke="${f}" stroke-width="2.5"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="800" fill="${f}">${t}</text>`;});r+=`<circle cx="${cx}" cy="${cy}" r="24" fill="${BL}"/><text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">국어</text>`;return S(190,170,r)}},
+{n:36,type:"ladder",en:"Ladder",ko:"계단",cat:"F",use:"발전·숙달 단계 계단.",render:()=>{const st=[["입문",BL],["숙련",EM],["전문",AM],["대가",RO]];return `<div style="display:flex;align-items:flex-end;gap:5px;height:130px">${st.map(([t,f],i)=>`<div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%"><div style="background:${f};color:#fff;width:52px;height:${35+i*28}px;border-radius:7px 7px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:5px;font-size:11px;font-weight:800">${t}</div></div>`).join("")}</div>`}},
+{n:37,type:"spectrum-line",en:"SpectrumLine",ko:"스펙트럼",cat:"F",use:"연속 스펙트럼, 입장 분포.",render:()=>`<div style="width:100%;max-width:260px"><div style="height:12px;border-radius:999px;background:linear-gradient(90deg,${BL},${EM},${AM},${RO})"></div><div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:800"><span style="color:${BL}">진보</span><span style="color:${MUT}">중도</span><span style="color:${RO}">보수</span></div></div>`},
+{n:38,type:"venn",en:"VennDiagram",ko:"벤다이어그램",cat:"F",tag:"new",use:"교집합·공통점/차이점.",render:()=>S(200,150,`<circle cx="78" cy="75" r="52" fill="${BL}" opacity=".35"/><circle cx="122" cy="75" r="52" fill="${RO}" opacity=".35"/><text x="56" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="${BL}">A</text><text x="144" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="${RO}">B</text><text x="100" y="80" text-anchor="middle" font-size="11" font-weight="800" fill="${INK}">공통</text>`)},
+{n:39,type:"balance-scale",en:"BalanceScale",ko:"양팔 저울",cat:"F",tag:"new",use:"균형·대립·trade-off 무게 비교.",render:()=>S(200,150,`<line x1="100" y1="30" x2="100" y2="118" stroke="${MUT}" stroke-width="4"/><line x1="40" y1="48" x2="160" y2="40" stroke="${INK}" stroke-width="4"/><circle cx="100" cy="30" r="6" fill="${INK}"/><rect x="20" y="48" width="44" height="30" rx="6" fill="${BL}"/><text x="42" y="68" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">자유</text><rect x="136" y="40" width="44" height="30" rx="6" fill="${RO}"/><text x="158" y="60" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">평등</text><line x1="60" y1="118" x2="140" y2="118" stroke="${MUT}" stroke-width="4"/>`)},
+{n:40,type:"nested-target",en:"NestedTarget",ko:"동심원·과녁",cat:"F",tag:"new",use:"포함 관계·범위 (개인⊂사회⊂국가).",render:()=>S(170,150,`<circle cx="85" cy="75" r="65" fill="${BL}" opacity=".2"/><circle cx="85" cy="75" r="44" fill="${EM}" opacity=".3"/><circle cx="85" cy="75" r="22" fill="${AM}"/><text x="85" y="22" text-anchor="middle" font-size="11" font-weight="800" fill="${BL}">국가</text><text x="85" y="46" text-anchor="middle" font-size="11" font-weight="800" fill="${EM}">사회</text><text x="85" y="79" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">개인</text>`)},
+
+// ---- G 타임라인 ----
+{n:41,type:"timeline-dots",en:"TimelineDots",ko:"연표 점",cat:"G",use:"사건 3~5개 시간순.",render:()=>{const ev=[["1392","조선",BL],["1592","임진",AM],["1897","대한",EM]];const W=290;let r=`<line x1="20" y1="75" x2="${W-20}" y2="75" stroke="${GRID}" stroke-width="3"/>`;ev.forEach(([y,t,f],i)=>{const x=40+i*((W-80)/(ev.length-1));r+=`<circle cx="${x}" cy="75" r="9" fill="${f}"/><text x="${x}" y="55" text-anchor="middle" font-size="12" font-weight="900" fill="${f}">${y}</text><text x="${x}" y="98" text-anchor="middle" font-size="11" font-weight="700" fill="${MUT}">${t}</text>`;});return S(W,120,r)}},
+{n:42,type:"chronology-ribbon",en:"ChronologyRibbon",ko:"시대 리본",cat:"G",use:"긴 시대 흐름 리본.",render:()=>{const er=[["고대",BL],["중세",EM],["근대",AM],["현대",RO]];return `<div style="display:flex;width:100%;max-width:280px;border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.08)">${er.map(([t,f],i)=>`<div style="flex:1;background:${f};color:#fff;text-align:center;font-size:12px;font-weight:800;padding:12px 4px">${t}</div>`).join("")}</div>`}},
+{n:43,type:"timeline-moment",en:"TimelineMoment",ko:"결정적 순간",cat:"G",use:"한 순간 깊게.",render:()=>`<div style="text-align:center"><div style="font-size:30px;font-weight:900;color:${BL}">1945.8.15</div><div style="font-size:17px;font-weight:800;margin-top:4px">광복</div><div style="font-size:12px;color:${MUT};font-weight:600;margin-top:6px">35년 식민 통치의 끝</div></div>`},
+
+// ---- H 수업·발문 ----
+{n:44,type:"discussion-prompt",en:"DiscussionPrompt",ko:"모둠 토론",cat:"H",use:"모둠 토론 지시 + 시간.",render:()=>card(`<div style="text-align:center"><div style="font-size:26px">💬</div><div style="font-size:14px;font-weight:800;margin-top:4px">모둠 토론</div><div style="font-size:12px;color:${MUT};font-weight:600;margin-top:3px">짝과 3분간 나눠보기 ⏱️</div></div>`,EM)},
+{n:45,type:"think-pause",en:"ThinkPause",ko:"생각 멈춤",cat:"H",use:"혼자 생각하기.",render:()=>`<div style="text-align:center"><div style="font-size:30px">🤔</div><div style="font-size:16px;font-weight:800;margin-top:4px">잠깐 생각해 봅시다</div></div>`},
+{n:46,type:"mini-quiz",en:"MiniQuiz",ko:"퀴즈",cat:"H",use:"OX·선택지 퀴즈.",render:()=>`<div style="width:100%;max-width:230px"><div style="font-size:13.5px;font-weight:800;text-align:center;margin-bottom:8px">물은 100°C에 끓는다?</div><div style="display:flex;gap:8px;justify-content:center">${chip("⭕ O",EM)}${chip("❌ X",RO)}</div></div>`},
+{n:47,type:"check-for-understanding",en:"CheckForUnderstanding",ko:"이해 확인",cat:"H",use:"형성평가 확인 질문.",render:()=>card(`<div style="text-align:center"><div style="font-size:13px;font-weight:800">광합성 산물은?</div><div style="font-size:14px;font-weight:900;color:${EM};margin-top:6px">→ 포도당 + 산소</div></div>`,EM)},
+
+// ---- I 정리 ----
+{n:48,type:"recap-three",en:"RecapThree",ko:"3 요점",cat:"I",use:"핵심 3요점 정리.",render:()=>`<div style="display:flex;flex-direction:column;gap:7px;width:100%;max-width:240px">${[["1","진입장벽이 핵심"],["2","생산자가 되자"],["3","AI는 도구다"]].map(([n,t],i)=>`<div style="display:flex;align-items:center;gap:9px"><div style="width:24px;height:24px;border-radius:7px;background:${col(i)};color:#fff;font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none">${n}</div><div style="font-size:13px;font-weight:700">${t}</div></div>`).join("")}</div>`},
+{n:49,type:"summary-map",en:"SummaryMap",ko:"요약 지도",cat:"I",use:"전체 구조 한눈에.",render:()=>{const cx=95,cy=80;const sp=[[40,35,"개념",EM],[150,35,"사례",AM],[40,125,"적용",SK],[150,125,"평가",RO]];let r="";sp.forEach(([x,y,t,f])=>r+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${GRID}" stroke-width="2"/>`);sp.forEach(([x,y,t,f])=>r+=`<rect x="${x-26}" y="${y-13}" width="52" height="26" rx="7" fill="${f}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${t}</text>`);r+=`<circle cx="${cx}" cy="${cy}" r="24" fill="${BL}"/><text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="11" font-weight="900" fill="#fff">정리</text>`;return S(190,160,r)}},
+{n:50,type:"closing-prompt",en:"ClosingPrompt",ko:"마무리",cat:"I",use:"마무리·행동 촉구.",render:()=>`<div style="text-align:center"><div style="font-size:20px;font-weight:900">오늘부터<br><span style="color:${BL}">하나씩 만들어 보세요</span></div><div style="font-size:12px;color:${MUT};font-weight:600;margin-top:8px">다음 시간엔 직접 발표 🚀</div></div>`},
+{n:51,type:"exit-ticket",en:"ExitTicket",ko:"배움 정리표",cat:"I",use:"수업 끝 소감·과제.",render:()=>card(`<div style="font-size:12.5px;font-weight:700;line-height:1.9">📝 오늘 새로 안 것: ____<br>❓ 더 궁금한 것: ____</div>`,AM)},
+
+// ---- J 차트(권장) ----
+{n:52,type:"big-number",en:"BigNumber",ko:"큰 수치",cat:"J",use:"충격적 수치 하나 각인.",render:()=>`<div style="text-align:center"><div style="font-size:56px;font-weight:900;color:${BL};line-height:1">4시간</div><div style="font-size:15px;font-weight:700;margin-top:4px">안에 내 앱을 만든다</div></div>`},
+{n:53,type:"bar-chart",en:"BarChart",ko:"세로 막대",cat:"J",use:"항목 비교 3~5개.",render:()=>vbars([{v:30,fg:BL,label:"A"},{v:75,fg:EM,label:"B"},{v:55,fg:AM,label:"C"},{v:90,fg:RO,label:"D"}])},
+{n:54,type:"horizontal-bar",en:"HorizontalBar",ko:"가로 막대",cat:"J",use:"긴 항목명 비교.",render:()=>{const d=[["서울특별시",90,BL],["부산광역시",62,EM],["인천광역시",45,AM]];return `<div style="display:flex;flex-direction:column;gap:9px;width:100%;max-width:260px">${d.map(([t,v,f])=>`<div><div style="font-size:11.5px;font-weight:700;margin-bottom:2px">${t}</div><div style="display:flex;align-items:center;gap:6px"><div style="height:16px;width:${v}%;background:${f};border-radius:0 8px 8px 0"></div><span style="font-size:11px;font-weight:800;color:${f}">${v}</span></div></div>`).join("")}</div>`}},
+{n:55,type:"lollipop-chart",en:"LollipopChart",ko:"롤리팝",cat:"J",use:"막대 대안, 깔끔한 순위.",render:()=>{const d=[["A",80,BL],["B",55,EM],["C",95,AM]];const W=260;let r="";d.forEach(([t,v,f],i)=>{const y=30+i*42;const x=50+(v/100)*(W-90);r+=`<text x="38" y="${y+5}" text-anchor="end" font-size="12" font-weight="700" fill="${MUT}">${t}</text><line x1="50" y1="${y}" x2="${x}" y2="${y}" stroke="${f}" stroke-width="3"/><circle cx="${x}" cy="${y}" r="10" fill="${f}"/><text x="${x+15}" y="${y+5}" font-size="12" font-weight="800" fill="${f}">${v}</text>`;});return S(W,150,r)}},
+{n:56,type:"line-chart",en:"LineChart",ko:"꺾은선",cat:"J",use:"시간 추세.",render:()=>{const v=[20,35,30,55,75,90];const W=270,H=150,pad=24,base=H-26;const max=100;const pts=v.map((d,i)=>[pad+i*((W-pad*2)/(v.length-1)),base-(d/max)*(base-16)]);let r=`<line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="${GRID}" stroke-width="2"/><polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="${BL}" stroke-width="3"/>`;pts.forEach((p,i)=>{if(i===0||i===pts.length-1)r+=`<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="${BL}"/>`;});r+=`<text x="${pts[pts.length-1][0]}" y="${pts[pts.length-1][1]-12}" text-anchor="end" font-size="12" font-weight="800" fill="${BL}">급등 ↑</text>`;return S(W,H,r)}},
+{n:57,type:"slope-chart",en:"SlopeChart",ko:"기울기",cat:"J",use:"두 시점 변화 비교.",render:()=>{const it=[["가",30,70,BL],["나",60,40,RO],["다",45,85,EM]];const W=240,H=150,x1=55,x2=W-55,top=20,bh=H-50;const max=100;let r=`<text x="${x1}" y="${H-12}" text-anchor="middle" font-size="11" font-weight="700" fill="${MUT}">2020</text><text x="${x2}" y="${H-12}" text-anchor="middle" font-size="11" font-weight="700" fill="${MUT}">2024</text>`;it.forEach(([t,a,b,f])=>{const ya=top+(1-a/max)*bh,yb=top+(1-b/max)*bh;r+=`<line x1="${x1}" y1="${ya}" x2="${x2}" y2="${yb}" stroke="${f}" stroke-width="2.5"/><circle cx="${x1}" cy="${ya}" r="5" fill="${f}"/><circle cx="${x2}" cy="${yb}" r="5" fill="${f}"/><text x="${x1-9}" y="${ya+4}" text-anchor="end" font-size="11" font-weight="800" fill="${f}">${a}</text><text x="${x2+9}" y="${yb+4}" font-size="11" font-weight="800" fill="${f}">${b}</text>`;});return S(W,H,r)}},
+{n:58,type:"stacked-bar-100",en:"Stacked100Bar",ko:"100% 스택",cat:"J",use:"비율·구성 (파이 대체).",render:()=>{const rows=[["A반",[[60,BL],[40,RO]]],["B반",[[35,BL],[65,RO]]]];return `<div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:270px">${rows.map(([t,seg])=>`<div><div style="font-size:11.5px;font-weight:700;margin-bottom:3px">${t}</div><div style="display:flex;height:22px;border-radius:7px;overflow:hidden">${seg.map(([p,f])=>`<div style="width:${p}%;background:${f};color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center">${p}%</div>`).join("")}</div></div>`).join("")}</div>`}},
+
+// ---- K PPT 차트 추가분 ----
+{n:59,type:"area-chart",en:"AreaChart",ko:"영역 차트",cat:"K",tag:"new",use:"추세 + 누적 양감.",render:()=>{const v=[25,40,32,60,78];const W=270,H=150,pad=24,base=H-26,max=100;const pts=v.map((d,i)=>[pad+i*((W-pad*2)/(v.length-1)),base-(d/max)*(base-16)]);const area=`${pad},${base} ${pts.map(p=>p.join(",")).join(" ")} ${W-pad},${base}`;return S(W,H,`<line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="${GRID}" stroke-width="2"/><polygon points="${area}" fill="${BL}" opacity=".25"/><polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="${BL}" stroke-width="3"/>`)}},
+{n:60,type:"pie-chart",en:"PieChart",ko:"파이 차트",cat:"K",tag:"rq",use:"한 전체의 구성 비율.",note:"조각 크기 비교가 어려워 옛 금지 항목. 여러 그룹 구성 비교엔 58번(100% 스택)이 더 잘 읽힙니다.",render:()=>{const seg=[[40,BL],[25,EM],[20,AM],[15,RO]];const cx=75,cy=75,R=60;let a=-90,p="";const rad=d=>d*Math.PI/180;seg.forEach(([v,f])=>{const a2=a+v*3.6;const x1=cx+R*Math.cos(rad(a)),y1=cy+R*Math.sin(rad(a)),x2=cx+R*Math.cos(rad(a2)),y2=cy+R*Math.sin(rad(a2));const large=v>50?1:0;p+=`<path d="M${cx} ${cy} L${x1} ${y1} A${R} ${R} 0 ${large} 1 ${x2} ${y2} Z" fill="${f}"/>`;const am=rad((a+a2)/2);p+=`<text x="${cx+R*.6*Math.cos(am)}" y="${cy+R*.6*Math.sin(am)+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${v}</text>`;a=a2;});return S(150,150,p)}},
+{n:61,type:"donut-chart",en:"DonutChart",ko:"도넛 차트",cat:"K",tag:"rq",use:"비율 + 가운데 총합 강조.",note:"파이와 같은 한계. 가운데 숫자 강조가 목적이면 52번(BigNumber)+막대 조합도 고려하세요.",render:()=>{const seg=[[55,BL],[30,EM],[15,AM]];const cx=75,cy=75,R=58,r0=34;let a=-90,p="";const rad=d=>d*Math.PI/180;seg.forEach(([v,f])=>{const a2=a+v*3.6;const x0=cx+R*Math.cos(rad(a)),y0=cy+R*Math.sin(rad(a)),x1=cx+R*Math.cos(rad(a2)),y1=cy+R*Math.sin(rad(a2)),x2=cx+r0*Math.cos(rad(a2)),y2=cy+r0*Math.sin(rad(a2)),x3=cx+r0*Math.cos(rad(a)),y3=cy+r0*Math.sin(rad(a));const lg=v>50?1:0;p+=`<path d="M${x0} ${y0} A${R} ${R} 0 ${lg} 1 ${x1} ${y1} L${x2} ${y2} A${r0} ${r0} 0 ${lg} 0 ${x3} ${y3} Z" fill="${f}"/>`;a=a2;});p+=`<text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="20" font-weight="900" fill="${INK}">100</text>`;return S(150,150,p)}},
+{n:62,type:"radar-chart",en:"RadarChart",ko:"레이더 차트",cat:"K",tag:"rq",use:"여러 축 역량 프로필.",note:"면적 해석이 어려워 옛 금지 항목. 항목 비교가 핵심이면 53번(막대)+색강조가 더 명확합니다.",render:()=>{const ax=["속도","정확","비용","품질","지속"];const val=[.9,.6,.7,.85,.5];const cx=85,cy=85,R=62,N=5;const pt=(i,r)=>[cx+r*Math.cos(-Math.PI/2+i*2*Math.PI/N),cy+r*Math.sin(-Math.PI/2+i*2*Math.PI/N)];let g="";[1,.66,.33].forEach(s=>{g+=`<polygon points="${ax.map((_,i)=>pt(i,R*s).join(",")).join(" ")}" fill="none" stroke="${GRID}" stroke-width="1.5"/>`;});const poly=val.map((v,i)=>pt(i,R*v).join(",")).join(" ");g+=`<polygon points="${poly}" fill="${BL}" opacity=".3" stroke="${BL}" stroke-width="2.5"/>`;ax.forEach((t,i)=>{const[x,y]=pt(i,R+12);g+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${MUT}">${t}</text>`;});return S(170,180,g)}},
+{n:63,type:"scatter-plot",en:"ScatterPlot",ko:"산점도",cat:"K",tag:"new",use:"두 변수 상관·분포.",render:()=>{const pts=[[30,80],[55,60],[70,50],[90,35],[110,40],[140,20],[160,25]];const W=250,H=150,base=H-24,left=28;let r=`<line x1="${left}" y1="${base}" x2="${W-12}" y2="${base}" stroke="${GRID}" stroke-width="2"/><line x1="${left}" y1="14" x2="${left}" y2="${base}" stroke="${GRID}" stroke-width="2"/>`;pts.forEach(([x,y])=>r+=`<circle cx="${x+left}" cy="${y}" r="6" fill="${BL}" opacity=".7"/>`);r+=`<line x1="${left+10}" y1="${base-15}" x2="${W-20}" y2="30" stroke="${RO}" stroke-width="2" stroke-dasharray="5 4"/>`;return S(W,H,r)}},
+{n:64,type:"bubble-chart",en:"BubbleChart",ko:"버블 차트",cat:"K",tag:"rq",use:"3변수 (x·y·크기).",note:"원 크기 비교가 어려워 옛 금지 항목. 대안은 55번(롤리팝).",render:()=>{const b=[[55,55,26,BL],[120,80,18,EM],[170,50,32,AM],[100,120,14,RO]];const W=250,H=150,base=H-22,left=26;let r=`<line x1="${left}" y1="${base}" x2="${W-12}" y2="${base}" stroke="${GRID}" stroke-width="2"/><line x1="${left}" y1="12" x2="${left}" y2="${base}" stroke="${GRID}" stroke-width="2"/>`;b.forEach(([x,y,s,f])=>r+=`<circle cx="${x}" cy="${y}" r="${s}" fill="${f}" opacity=".55"/>`);return S(W,H,r)}},
+{n:65,type:"waterfall-chart",en:"WaterfallChart",ko:"폭포 차트",cat:"K",tag:"new",use:"증감 누적 (예산·손익 변동).",render:()=>{const steps=[["시작",0,60,BL],["수입",60,90,EM],["지출",90,55,RO],["남음",0,55,AM]];const W=260,H=150,base=H-26,scale=1.1;const bw=42,gap=14;let r=`<line x1="14" y1="${base}" x2="${W-10}" y2="${base}" stroke="${GRID}" stroke-width="2"/>`;steps.forEach(([t,from,to,f],i)=>{const x=20+i*(bw+gap);const yTop=base-Math.max(from,to)*scale,h=Math.abs(to-from)*scale||base-to*scale;const y=(i===0||i===3)?base-to*scale:yTop,hh=(i===0||i===3)?to*scale:Math.abs(to-from)*scale;r+=`<rect x="${x}" y="${y}" width="${bw}" height="${hh}" rx="4" fill="${f}"/><text x="${x+bw/2}" y="${base+15}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${MUT}">${t}</text>`;});return S(W,H,r)}},
+{n:66,type:"funnel-chart",en:"FunnelChart",ko:"깔때기 차트",cat:"K",tag:"new",use:"단계별 전환·감소 (수치 포함).",render:()=>{const st=[["방문",100,BL],["가입",62,EM],["구매",28,AM],["재구매",11,RO]];const W=250,H=150,fh=30,gap=4;let r="";st.forEach(([t,v,f],i)=>{const w=(v/100)*180,x=(W-w)/2,y=10+i*(fh+gap);r+=`<rect x="${x}" y="${y}" width="${w}" height="${fh}" rx="4" fill="${f}"/><text x="${W/2}" y="${y+20}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${t} ${v}%</text>`;});return S(W,H,r)}},
+{n:67,type:"treemap",en:"Treemap",ko:"트리맵",cat:"K",tag:"new",use:"비율 + 위계 사각 타일.",render:()=>S(250,150,`<rect x="6" y="6" width="140" height="138" rx="5" fill="${BL}"/><text x="76" y="80" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">A 45%</text><rect x="150" y="6" width="94" height="78" rx="5" fill="${EM}"/><text x="197" y="50" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">B 28%</text><rect x="150" y="88" width="56" height="56" rx="5" fill="${AM}"/><text x="178" y="120" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff">C</text><rect x="210" y="88" width="34" height="56" rx="5" fill="${RO}"/>`)},
+{n:68,type:"histogram",en:"Histogram",ko:"히스토그램",cat:"K",tag:"new",use:"구간별 분포(도수).",render:()=>{const v=[10,28,55,80,62,30,12];const W=260,H=150,base=H-22,pad=16,bw=(W-pad*2)/v.length-3,max=90;let r=`<line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="${GRID}" stroke-width="2"/>`;v.forEach((d,i)=>{const h=(d/max)*(base-12),x=pad+i*(bw+3);r+=`<rect x="${x}" y="${base-h}" width="${bw}" height="${h}" fill="${BL}" opacity=".8" stroke="#fff" stroke-width="1"/>`;});return S(W,H,r)}},
+{n:69,type:"combo-chart",en:"ComboChart",ko:"복합 차트",cat:"K",tag:"rq",use:"막대 + 꺾은선 복합.",note:"이중축은 해석이 혼란스러워 옛 금지 항목. 두 장 슬라이드로 나누는 편이 또렷합니다.",render:()=>{const bar=[40,65,50,80];const line=[30,45,70,60];const W=260,H=150,pad=22,base=H-24,max=100,bw=34;let r=`<line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="${GRID}" stroke-width="2"/>`;const gap=(W-pad*2-bar.length*bw)/(bar.length+1);const xs=[];bar.forEach((d,i)=>{const x=pad+gap+i*(bw+gap),h=(d/max)*(base-14);xs.push(x+bw/2);r+=`<rect x="${x}" y="${base-h}" width="${bw}" height="${h}" rx="4" fill="${BL}" opacity=".75"/>`;});const pts=line.map((d,i)=>[xs[i],base-(d/max)*(base-14)]);r+=`<polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="${RO}" stroke-width="3"/>`;pts.forEach(p=>r+=`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${RO}"/>`);return S(W,H,r)}},
+{n:70,type:"gauge-chart",en:"GaugeChart",ko:"게이지",cat:"K",tag:"new",use:"단일 지표 달성률 게이지.",render:()=>{const pct=72;const cx=85,cy=95,R=62;const rad=d=>d*Math.PI/180;const a0=180,a1=180+pct*1.8;const x0=cx+R*Math.cos(rad(a0)),y0=cy+R*Math.sin(rad(a0)),x1=cx+R*Math.cos(rad(a1)),y1=cy+R*Math.sin(rad(a1)),xe=cx+R*Math.cos(rad(360)),ye=cy+R*Math.sin(rad(360));return S(175,120,`<path d="M${x0} ${y0} A${R} ${R} 0 0 1 ${xe} ${ye}" fill="none" stroke="${GRID}" stroke-width="14" stroke-linecap="round"/><path d="M${x0} ${y0} A${R} ${R} 0 ${pct>50?1:0} 1 ${x1} ${y1}" fill="none" stroke="${BL}" stroke-width="14" stroke-linecap="round"/><text x="${cx}" y="${cy-6}" text-anchor="middle" font-size="26" font-weight="900" fill="${BL}">${pct}%</text>`)}},
+
+// ---- L 사료 ----
+{n:71,type:"quote-annotation",en:"QuoteAnnotation",ko:"사료+주석",cat:"L",use:"1차 사료 + 측면 주석.",render:()=>`<div style="display:flex;gap:8px;width:100%;max-width:280px">${card(`<div style="font-size:11.5px;font-weight:600;line-height:1.55;font-style:italic">"왕은 백성을 <span style="background:${AM}33;font-weight:800">하늘</span>로 삼는다"</div>`,BL,"flex:1.4")}<div style="flex:1;font-size:10.5px;color:${MUT};font-weight:600;line-height:1.5">→ 민본 사상</div></div>`},
+{n:72,type:"primary-source-lens",en:"PrimarySourceLens",ko:"사료 렌즈",cat:"L",use:"사료 분석 렌즈 (누가·무엇·왜).",render:()=>card(`<div style="font-size:11.5px;font-weight:700;line-height:1.8">🔎 누가 썼나?<br>📜 무엇을 말하나?<br>❓ 왜 썼나?</div>`,SK)},
+{n:73,type:"historical-figure-card",en:"HistoricalFigureCard",ko:"인물 카드",cat:"L",use:"인물 소개 카드.",render:()=>card(`<div style="text-align:center"><div style="font-size:30px">👑</div><div style="font-size:15px;font-weight:900;margin-top:3px">세종대왕</div><div style="font-size:11px;color:${MUT};font-weight:600">1397~1450 · 훈민정음</div></div>`,AM)},
+
+// ---- M 표 ----
+{n:74,type:"table-slide",en:"TableSlide",ko:"표",cat:"M",use:"항목×속성 격자 (4×4 이하).",render:()=>`<table style="border-collapse:collapse;font-size:11.5px;font-weight:700;width:100%;max-width:270px"><tr style="background:${BL};color:#fff"><th style="padding:6px 9px;border-radius:8px 0 0 0">구분</th><th style="padding:6px 9px">A안</th><th style="padding:6px 9px;border-radius:0 8px 0 0">B안</th></tr><tr><td style="padding:6px 9px;background:#fff;color:${MUT}">비용</td><td style="padding:6px 9px;background:#fff;text-align:center">낮음</td><td style="padding:6px 9px;background:#fff;text-align:center">높음</td></tr><tr><td style="padding:6px 9px;background:#F8FAFF;color:${MUT}">속도</td><td style="padding:6px 9px;background:#F8FAFF;text-align:center">느림</td><td style="padding:6px 9px;background:#F8FAFF;text-align:center;color:${EM};font-weight:900">빠름</td></tr></table>`},
+];
+
+// ===== 렌더링 =====
+const CATS={A:"텍스트 강조",B:"키워드·목록 (List)",C:"비교·관계",D:"흐름·과정 (Process)",E:"주기·순환 (Cycle)",F:"계층·구조 (Hierarchy)",G:"타임라인",H:"수업·발문",I:"정리·마무리",J:"데이터 차트 (권장)",K:"PPT 차트 추가분",L:"사료·출처",M:"표"};
+const order=["A","B","C","D","E","F","G","H","I","J","K","L","M"];
+const root=document.getElementById("root");
+const nav=document.getElementById("nav");
+
+order.forEach(cat=>{
+  const items=C.filter(c=>c.cat===cat);
+  if(!items.length)return;
+  const range=`${items[0].n}–${items[items.length-1].n}`;
+  const a=document.createElement("a"); a.href="#cat-"+cat; a.textContent=`${CATS[cat]} (${range})`; nav.appendChild(a);
+
+  const head=document.createElement("div"); head.className="cat"; head.id="cat-"+cat;
+  head.innerHTML=`<h2>${CATS[cat]}</h2><span class="rng">${range}</span><div class="ln"></div>`;
+  root.appendChild(head);
+
+  const grid=document.createElement("div"); grid.className="grid";
+  items.forEach(c=>{
+    const el=document.createElement("div"); el.className="comp"; el.id="c"+c.n;
+    const tags=[`<span class="t t-type">${c.type}</span>`];
+    if(c.tag==="new")tags.push(`<span class="t t-new">NEW</span>`);
+    if(c.tag==="rq")tags.push(`<span class="t t-rq">요청시</span>`);
+    el.innerHTML=`
+      <div class="comp-head">
+        <div class="num">${c.n}</div>
+        <div class="names"><div class="en">${c.en}</div><div class="ko">${c.ko}</div></div>
+      </div>
+      <div class="tags">${tags.join("")}</div>
+      <div class="use">${c.use}</div>
+      ${c.note?`<div class="note">⚠️ ${c.note}</div>`:""}
+      <div class="stage">${c.render()}</div>`;
+    grid.appendChild(el);
+  });
+  root.appendChild(grid);
+});
+
+// spring-pop 스크롤 등장 (모션 줄이기·미지원·인쇄 시엔 전부 즉시 표시)
+const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const all=document.querySelectorAll(".comp");
+if(reduce||!("IntersectionObserver"in window)){
+  all.forEach(el=>el.classList.add("vis"));
+}else{
+  const io=new IntersectionObserver((es)=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add("vis"),(i%6)*60);io.unobserve(e.target);}});},{threshold:.12, rootMargin:"0px 0px 120px 0px"});
+  all.forEach(el=>io.observe(el));
+  // 인쇄 직전엔 안 보이는 카드까지 모두 펼친다(PDF 저장 대비)
+  window.addEventListener("beforeprint",()=>all.forEach(el=>el.classList.add("vis")));
+}
+</script>
+</body>
+</html>
