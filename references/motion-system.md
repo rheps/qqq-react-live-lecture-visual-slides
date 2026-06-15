@@ -99,7 +99,7 @@ function MotionItem({enter, idle, i=0, as="div", className, style, children, ...
 | table-slide | listV + `tableRow` | **없음** | 표 행은 enter만 |
 | animated-bar-chart 막대 | — | — | **기존 CSS height grow 유지**(FM scaleY 전환 금지 — 라벨 찌그러짐·reveal 타이밍 위험) |
 | 강조 단어(hl) | — | — | **그대로 둠**(마커 sweep 금지, 회귀 위험) |
-| 슬라이드 전환 | AnimatePresence `mode="wait"` + `key=idx` | — | step 내부 전환 제외 |
+| 슬라이드 전환 | AnimatePresence **기본 sync 모드 + opacity 크로스페이드**(`STAGE_FADE`, `key=cur.id`) | — | 모핑 기본 ON이라 변형 금지(x/scale/rotate). `mode="wait"`는 옛 슬라이드를 먼저 내보내 모핑이 깨지므로 쓰지 않는다. 화려한 5종 전환은 모핑 끌 때만 (`motion-theme-upgrades.md` 2번) |
 
 > **핵심 규칙**: 읽는 글씨(제목·메시지·질문·본문·인용)에는 idle을 절대 주지 않는다. idle은 이모지·카드·기호·통계처럼 시각적으로 보는 요소에만.
 
