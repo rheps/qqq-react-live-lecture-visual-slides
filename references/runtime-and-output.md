@@ -195,7 +195,7 @@ useEffect(() => {
 규칙:
 
 - 화면 상단 또는 하단에 얇게 (높이 3~6px).
-- progress bar·페이지 번호는 4:3 캔버스가 아니라 **viewport 레벨**(app-wrap 직속, 화면 끝~끝)에 둔다. 스케일 안 받게.
+- progress **바**는 viewport 레벨(app-wrap 직속, 화면 끝~끝)에 둬 스케일 안 받게 한다(얇아서 OK). **단 ◀▶·페이지 번호·✏️ 편집 버튼·힌트는 `transform:scale(var(--fit))`(각자 모서리 origin)로 캔버스와 함께 비례 축소** — 작은 iframe 임베드에서 컨트롤만 커 보이지 않게.
 - 진행률 = `(slideIndex + 1) / slides.length`를 기본으로 한다. (step은 자동 등장이라 진행률에 굳이 안 넣어도 된다.)
 - progress bar 색은 메인 블루→하늘 그라디언트 (`linear-gradient(90deg,#3B82F6,#0EA5E9)`), 트랙은 옅은 블루 `rgba(59,130,246,0.10)`. 다크 테마에선 트랙을 `rgba(255,255,255,0.08)`로. (옛 테라코타/베이지 아님.)
 
@@ -226,6 +226,30 @@ useEffect(() => {
 }
 ```
 
+### 컨트롤 비례 축소 + 임베드 편집기 숨김 (필수)
+
+진행 바는 화면 끝~끝(스케일 X)으로 두되, **나머지 컨트롤은 캔버스와 같은 `--fit` 배율로 줄인다.** 작은 iframe(연수·공유 페이지 임베드)에서 컨트롤만 거대하게 남는 문제를 막는다.
+
+```css
+.nav     { transform: scale(var(--fit,1)); transform-origin: bottom right; }
+.editbtn { transform: scale(var(--fit,1)); transform-origin: bottom left;  }
+.hint    { transform: scale(var(--fit,1)); transform-origin: bottom left;  }
+```
+
+**공개판(iframe)에선 편집기를 숨긴다.** 연수·공유 페이지는 슬라이드를 iframe으로 띄우므로 그 안에선 누구나 편집하면 안 된다:
+
+```jsx
+const EMBED = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+// 키보드: EMBED면 E 토글 무시
+if ((e.key === 'e' || e.key === 'E') && !EMBED) setEdit(v => !v);
+// 렌더: EMBED면 편집기 UI 숨김
+<div className="hint">{EMBED ? '← →' : '← →  ·  E 편집'}</div>
+{!EMBED && <button className="editbtn" onClick={...}>✏️</button>}
+{!EMBED && edit && <Editor ... />}
+```
+
+`EMBED`는 top-level(직접 열기=작업)이면 false → 편집기 노출, iframe(공개)면 true → 편집기 숨김. (실제 연수 페이지 `vibe-coding-2026-06`에서 검증.)
+
 ---
 
 ## 6. 출력 요구사항 (단일 HTML 샘플)
@@ -245,7 +269,7 @@ useEffect(() => {
 - **이동: 화면 좌반 클릭=이전·우반 클릭=다음**, 키보드 ←/PageUp=이전·→/Space/PageDown=다음·Home/End, **우하단 ◀ [N/M] ▶ 버튼**(stopPropagation). 입력 포커스 중엔 키 네비 무시
 - touch swipe
 - 내용의 관계를 시각 구조로(카드·바차트·플로우·대조·표 등). title+문단 금지. 구조 선택은 `structure-catalog.md`
-- **진행 막대·페이지 번호는 viewport 레벨**(화면 끝~끝, 스케일 안 받음), 제목 위 라벨은 pill 칩 대신 `Eyebrow`(페이드 선+자간)
+- **진행 막대는 viewport 레벨**(화면 끝~끝). **◀▶·페이지 번호·✏️·힌트는 `scale(var(--fit))`로 비례 축소**(작은 iframe 임베드 대응). **iframe 임베드(`window.self!==window.top`)면 편집기(✏️·E키·패널) 숨김.** 제목 위 라벨은 pill 칩 대신 `Eyebrow`(페이드 선+자간)
 - `location.hash` 동기화(번호 기반) + 현재±1장만 렌더(lazy mount)
 - speaker notes 데이터 + `console` 출력(메인 화면 비표시)
 - **내장 텍스트 편집기 필수(섹션 8)**: `E` 키/`✏️` 토글, 텍스트 즉시 반영, **localStorage 자동저장**(원본 시그니처 키), **💾 저장**(File System Access 파일 덮어쓰기·**핸들을 IndexedDB에 기억해 재방문 첫 저장도 허락 한 번**·미지원/`file://`이면 다운로드 폴백)·**⬇ 내보내기**(다운로드)·**↩ 원본으로 되돌리기**. 저장 HTML은 Babel 주입 컴파일 스크립트 제거 + doctype로 재오픈 안전
