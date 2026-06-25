@@ -16,9 +16,9 @@
 | 기본 배경 | 블루/틸 파스텔 메시 그라디언트 (`linear-gradient(135deg, #EFF6FF 0%, #F0FDFA 50%, #F0F9FF 100%)`) |
 | 기본 텍스트 | `#0F172A` (딥 슬레이트) |
 | 포인트 컬러 | 블루 `#3B82F6` (메인), 하늘 `#0EA5E9`, 틸 `#14B8A6` |
-| glass-card 배경 | `rgba(255, 255, 255, 0.65)` + `backdrop-filter: blur(16px)` |
-| glass-card 테두리 | `1px solid rgba(255, 255, 255, 0.5)` |
-| glass-card 그림자 | `0 8px 32px rgba(0,0,0,0.04), 0 0 20px rgba(59,130,246,0.12)` |
+| glass-card 배경 | `rgba(255, 255, 255, 0.40)` + `backdrop-filter: blur(22px) saturate(1.3)` (실제 덱 값 — 뒤가 살짝 비치는 프로스트) |
+| glass-card 테두리 | `1px solid rgba(255, 255, 255, 0.75)` |
+| glass-card 그림자 | `0 10px 36px rgba(0,0,0,0.08), 0 0 22px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.5)` (마지막 inset = 상단 하이라이트 = 3D 광택) |
 
 ### 서브 액센트 팔레트 (보라 완전 제외)
 
@@ -66,13 +66,14 @@ const col = i => PALETTE[i % PALETTE.length];
 ```css
 /* 기본 glass-card */
 .glass-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04),
-              0 0 20px rgba(99, 102, 241, 0.12);
+  background: rgba(255, 255, 255, 0.40);          /* 더 투명 — 뒤 배경이 살짝 비친다 (덱 값) */
+  backdrop-filter: blur(22px) saturate(1.3);
+  -webkit-backdrop-filter: blur(22px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 22px;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.08),
+              0 0 22px rgba(59, 130, 246, 0.12),      /* 글로우는 블루 (보라 금지) */
+              inset 0 1px 0 rgba(255, 255, 255, 0.5); /* 상단 하이라이트 = 입체감 */
 }
 
 /* 색상별 glow 변형 — 파스텔 빛 번짐 */
@@ -89,15 +90,33 @@ inline style에서는 다음과 같이 동적으로 적용한다:
 ```jsx
 const c = col(i);
 <div style={{
-  background: c.bg,
-  backdropFilter: "blur(16px)",
-  WebkitBackdropFilter: "blur(16px)",
-  border: "1px solid rgba(255,255,255,0.5)",
-  borderRadius: 16,
-  boxShadow: `0 8px 32px rgba(0,0,0,0.04), 0 0 24px ${c.glow}`,
+  background: "rgba(255,255,255,0.40)",   // c.bg(0.85)는 불투명 — 덱은 흰색 0.40로 비치게
+  backdropFilter: "blur(22px) saturate(1.3)",
+  WebkitBackdropFilter: "blur(22px) saturate(1.3)",
+  border: "1px solid rgba(255,255,255,0.75)",
+  borderRadius: 22,
+  boxShadow: `0 10px 36px rgba(0,0,0,0.08), 0 0 22px ${c.glow}, inset 0 1px 0 rgba(255,255,255,0.5)`,
   borderTop: `3px solid ${c.fg}`,
 }}>
 ```
+
+### 2-1. 색상 요소 — 광택·3D (Glossy)
+
+**흰 카드는 glass(반투명)** 로, 그러나 **색이 있는 요소(버튼·단계 리본·강조 원/허브·스펙트럼 바·차트 막대 등)는 반투명으로 만들지 않는다.** 색은 그대로 두고 **상단 흰 sheen + inset 하이라이트 + 깊이 그림자**로 입체감(광택)을 준다.
+
+```jsx
+// 색상 요소(예: 단계 리본·강조 원)
+<div style={{
+  background: `linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 48%), linear-gradient(135deg, ${fg}, ${fg}cf)`,
+  boxShadow: `0 10px 22px ${fg}50, inset 0 1px 0 rgba(255,255,255,.55), inset 0 -4px 10px rgba(0,0,0,.13)`,
+  color: "#fff",
+}}>
+```
+
+- 첫 번째 그라디언트 = **상단 흰 광택**(위 30% → 투명), 두 번째 = 본래 색.
+- `inset 0 1px 0 rgba(255,255,255,.55)` = 윗변 하이라이트, `inset 0 -4px 10px rgba(0,0,0,.13)` = 아래 깊이.
+- **SVG 도형도 같은 원리**: 흰 면(`fill="#fff"`)은 반투명(`rgba(255,255,255,.55)`)으로 → 뒤가 비침. 단색 면(막대·원)은 위가 밝은 세로 그라디언트(`<linearGradient>` 흰→색)로 광택. 흰 *글자*(`<text fill="#fff">`)는 그대로 둔다.
+- 요약: **배경이 흰색이면 glass(반투명), 배경이 색이면 glossy(불투명+광택).** 절대 색 요소를 반투명으로 만들지 않는다.
 
 ---
 
