@@ -37,6 +37,9 @@ ok("33 glossCircle 사용", /glossCircle\(/.test(r33));
 const r31 = renderOf(31);
 ok("31 glossBlockStyle 사용", /glossBlockStyle\(/.test(r31));
 
+const r28 = renderOf(28);
+ok("28 glossWedge 사용", /glossWedge\(/.test(r28));
+
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
 let failed = 0;
 for (const c of checks) {
