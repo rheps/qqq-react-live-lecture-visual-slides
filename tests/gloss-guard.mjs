@@ -59,6 +59,18 @@ ok("38 multiply 블렌드 사용", /mix-blend-mode:multiply/.test(r38));
 
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
 
+// 브랜드 로고
+ok("BRAND 정의", /const BRAND\s*=/.test(html));
+ok("brandLogo 정의", /function brandLogo\s*\(/.test(html));
+ok("brandTile 정의", /function brandTile\s*\(/.test(html));
+for (const k of ["claude","openai","antigravity","gemini","github","vscode","python","node"]) {
+  ok(`BRAND.${k} 존재`, new RegExp(`\\b${k}\\s*:\\s*\\{`).test(html));
+}
+const r82 = renderOf(82);
+ok("82 brandTile 사용", /brandTile\(/.test(r82));
+const skill = readFileSync(join(root, "SKILL.md"), "utf8");
+ok("SKILL에 공식 로고 지침", /공식 로고|brandTile/.test(skill));
+
 // 확장: 광택 적용 대상 (배치별 확대) — 각자 gloss 헬퍼를 실제 참조해야 함
 const GLOSSY = [26,29,30,34,39,40,41,49,12,17,18,19,21,24,25,32,36,42,48,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70];
 for (const n of GLOSSY) {

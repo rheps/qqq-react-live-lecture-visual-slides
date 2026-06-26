@@ -167,3 +167,7 @@ Layer 1만 있고 Layer 2가 없으면 결과물이 "제목 + 텍스트 카드" 
 ## 생성 후 — 강조·구조 점검을 권유한다
 
 덱을 다 만들면, 사용자에게 **`qqq-slide-emphasis-audit`로 원본 대비 강조·구조 점검**을 돌리길 권한다. 이 생성 단계에서 글자 크기·잘림·등장 등 시각/동작은 챙기지만, "각 슬라이드가 원본의 **진짜 핵심 개념**을 제대로 강조했는지, 그 핵심에 **구조(템플릿)가 최적인지**"는 별도 점검 skill이 원본과 1:1로 따져 잡는다. (자주 나오는 강조 역전을 사후에 한 번 더 거른다.)
+
+## 브랜드 로고
+
+AI 툴·서비스나 개발 도구(Claude Code·Codex·Antigravity·ChatGPT·Gemini·GitHub·VS Code·Python·Node 등)를 언급할 때는 **임의 이모지(🤖·💻 등)를 쓰지 않고 공식 로고를 쓴다.** `component-gallery.html`의 `brandTile(key,label,size)` / `brandLogo(key,size)`를 사용한다 (키: claude/openai/antigravity/gemini/github/vscode/python/node — Claude Code는 claude, ChatGPT는 openai 마크 재사용). 로고는 브랜드 원색, 타일은 중립 라이트 광택. 카탈로그 82번(공식 로고)에서 확인.
