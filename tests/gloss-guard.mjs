@@ -25,6 +25,11 @@ export function renderOf(n) {
   return m[0];
 }
 
+const r35 = renderOf(35);
+ok("35 반투명 단색 fill 없음", !/fill="rgba\(255,255,255,\.62\)"/.test(r35));
+ok("35 glossCircle 사용", /glossCircle\(/.test(r35));
+ok("35 glossStroke 사용", /glossStroke\(/.test(r35));
+
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
 let failed = 0;
 for (const c of checks) {
