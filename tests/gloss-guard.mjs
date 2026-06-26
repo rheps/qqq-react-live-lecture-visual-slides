@@ -58,6 +58,14 @@ ok("38 흰 inner plate 존재", /fill="#fff"|fill="#ffffff"/.test(r38));
 ok("38 multiply 블렌드 사용", /mix-blend-mode:multiply/.test(r38));
 
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
+
+// 확장: 광택 적용 대상 (배치별 확대) — 각자 gloss 헬퍼를 실제 참조해야 함
+const GLOSSY = [26,29,30,34,39,40,41,49];
+for (const n of GLOSSY) {
+  const r = renderOf(n);
+  ok(`${n} gloss 적용`, /gloss(Circle|Rect|Wedge|Stroke|BlockStyle)\(/.test(r));
+}
+
 let failed = 0;
 for (const c of checks) {
   console.log(`${c.pass ? "PASS" : "FAIL"}  ${c.name}`);
