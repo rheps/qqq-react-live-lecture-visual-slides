@@ -40,6 +40,11 @@ ok("31 glossBlockStyle 사용", /glossBlockStyle\(/.test(r31));
 const r28 = renderOf(28);
 ok("28 glossWedge 사용", /glossWedge\(/.test(r28));
 
+const r27 = renderOf(27);
+ok("27 반투명 단색 fill 없음", !/fill="rgba\(255,255,255,\.62\)"/.test(r27));
+ok("27 그라데이션 fill 사용", /fill="url\(#rg/.test(r27));
+ok("27 글로우 필터 사용", /filter="url\(#gw/.test(r27));
+
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
 let failed = 0;
 for (const c of checks) {
