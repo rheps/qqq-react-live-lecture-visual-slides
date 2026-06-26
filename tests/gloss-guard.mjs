@@ -33,21 +33,25 @@ const r35 = renderOf(35);
 ok("35 반투명 단색 fill 없음", !/fill="rgba\(255,255,255,\.62\)"/.test(r35));
 ok("35 glossCircle 사용", /glossCircle\(/.test(r35));
 ok("35 glossStroke 사용", /glossStroke\(/.test(r35));
+ok("35 Sg 사용", /Sg\(/.test(r35));
 
 const r33 = renderOf(33);
 ok("33 반투명 단색 fill 없음", !/fill="rgba\(255,255,255,\.62\)"/.test(r33));
 ok("33 glossCircle 사용", /glossCircle\(/.test(r33));
+ok("33 Sg 사용", /Sg\(/.test(r33));
 
 const r31 = renderOf(31);
 ok("31 glossBlockStyle 사용", /glossBlockStyle\(/.test(r31));
 
 const r28 = renderOf(28);
 ok("28 glossWedge 사용", /glossWedge\(/.test(r28));
+ok("28 Sg 사용", /Sg\(/.test(r28));
 
 const r27 = renderOf(27);
 ok("27 반투명 단색 fill 없음", !/fill="rgba\(255,255,255,\.62\)"/.test(r27));
 ok("27 그라데이션 fill 사용", /fill="url\(#rg/.test(r27));
 ok("27 글로우 필터 사용", /filter="url\(#gw/.test(r27));
+ok("27 Sg 사용", /Sg\(/.test(r27));
 
 const r38 = renderOf(38);
 ok("38 흰 inner plate 존재", /fill="#fff"|fill="#ffffff"/.test(r38));
