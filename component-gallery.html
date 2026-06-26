@@ -132,6 +132,21 @@ const col=i=>PAL[i%PAL.length];
 
 // ===== 공용 빌더 =====
 const S=(w,h,inner)=>`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;max-height:172px">${inner}</svg>`;
+// ===== 광택 키트 (라이트) =====
+const _hx=c=>c.replace('#','');
+const lighten=(c,a)=>{const n=parseInt(_hx(c),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;r=Math.round(r+(255-r)*a);g=Math.round(g+(255-g)*a);b=Math.round(b+(255-b)*a);return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');};
+const darken=(c,a)=>{const n=parseInt(_hx(c),16);let r=(n>>16)&255,g=(n>>8)&255,b=n&255;r=Math.round(r*(1-a));g=Math.round(g*(1-a));b=Math.round(b*(1-a));return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');};
+const gid=c=>'x'+_hx(c);
+function glossDefs(colors){
+  const uniq=[...new Set(colors)];
+  return `<defs>${uniq.map(c=>{const k=gid(c);return `<radialGradient id="rg${k}" cx="38%" cy="30%" r="80%"><stop offset="0%" stop-color="${lighten(c,.5)}"/><stop offset="100%" stop-color="${c}"/></radialGradient><linearGradient id="lg${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${lighten(c,.32)}"/><stop offset="100%" stop-color="${darken(c,.1)}"/></linearGradient><filter id="gw${k}" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="${c}" flood-opacity="0.40"/><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0F172A" flood-opacity="0.16"/></filter>`;}).join('')}</defs>`;
+}
+const Sg=(w,h,inner,colors)=>`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;max-height:172px">${glossDefs(colors)}${inner}</svg>`;
+function glossCircle(cx,cy,r,c){const k=gid(c);return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#rg${k})" stroke="rgba(255,255,255,.75)" stroke-width="1" filter="url(#gw${k})"/><ellipse cx="${cx}" cy="${cy-r*.38}" rx="${r*.62}" ry="${r*.34}" fill="rgba(255,255,255,.55)" style="mix-blend-mode:soft-light"/>`;}
+function glossRect(x,y,w,h,c,rx=7){const k=gid(c);return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#lg${k})" stroke="rgba(255,255,255,.55)" stroke-width="1" filter="url(#gw${k})"/><rect x="${x+2}" y="${y+1.5}" width="${w-4}" height="${Math.max(2,h*.32)}" rx="${rx*.6}" fill="rgba(255,255,255,.4)" style="mix-blend-mode:soft-light"/>`;}
+function glossWedge(d,c){const k=gid(c);return `<path d="${d}" fill="url(#lg${k})" stroke="rgba(255,255,255,.6)" stroke-width="1" filter="url(#gw${k})"/>`;}
+function glossStroke(d,c,w=4){const k=gid(c);return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" filter="url(#gw${k})"/><path d="${d}" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="${Math.max(1,w*.4)}" stroke-linecap="round"/>`;}
+const glossBlockStyle=c=>`background:linear-gradient(135deg,${lighten(c,.32)},${darken(c,.06)});border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 4px 10px rgba(15,23,42,.14),0 0 14px ${c}55;`;
 const card=(html,fg,extra="")=>`<div style="background:rgba(255,255,255,.52);backdrop-filter:blur(13px) saturate(1.3);-webkit-backdrop-filter:blur(13px) saturate(1.3);border:1px solid rgba(255,255,255,.75);border-top:3px solid ${fg};border-radius:13px;box-shadow:0 8px 22px rgba(0,0,0,.07),0 0 14px ${fg}22,inset 0 1px 0 rgba(255,255,255,.65);padding:9px 11px;${extra}">${html}</div>`;
 const chip=(t,fg)=>`<span style="display:inline-block;background:rgba(255,255,255,.5);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);color:${fg};border:1px solid ${fg}55;border-radius:999px;padding:4px 11px;font-weight:700;font-size:12.5px;box-shadow:0 2px 8px ${fg}22,inset 0 1px 0 rgba(255,255,255,.65);margin:3px">${t}</span>`;
 const arrow=(fg=MUT)=>`<span style="color:${fg};font-size:22px;font-weight:900;margin:0 2px">→</span>`;
