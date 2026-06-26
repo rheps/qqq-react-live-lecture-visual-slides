@@ -4,9 +4,13 @@ import { dirname, join } from "node:path";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const html = readFileSync(join(root, "component-gallery.html"), "utf8");
+const design = readFileSync(join(root, "references", "design-and-readability.md"), "utf8");
 
 const checks = [];
 const ok = (name, cond) => checks.push({ name, pass: !!cond });
+
+ok("design 문서에 도형 광택 공식 절", /도형 광택 공식/.test(design));
+ok("design 문서에 feDropShadow 레시피", /feDropShadow/.test(design));
 
 // --- 키트 존재 ---
 ok("glossDefs 정의", /function glossDefs\s*\(/.test(html));

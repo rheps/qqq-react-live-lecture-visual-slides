@@ -65,8 +65,8 @@
 | # | type | 이름 | 언제 쓰나 | 비고 |
 |---|---|---|---|---|
 | 26 | `loop-diagram` | LoopDiagram / CycleDiagram | 반복 개선 사이클·PDCA | |
-| 27 | `gear-cycle` | GearCycle | 맞물려 도는 톱니바퀴 (PPT 기어) | NEW |
-| 28 | `segmented-cycle` | SegmentedCycle | 호(arc) 블록 순환 (PPT 블록 주기) | NEW |
+| 27 | `gear-cycle` | GearCycle | 맞물려 도는 톱니바퀴 (PPT 기어) · 라이트 광택 표준 | NEW |
+| 28 | `segmented-cycle` | SegmentedCycle | 호(arc) 블록 순환 (PPT 블록 주기) · 라이트 광택 표준 | NEW |
 
 ## F. 계층·구조 (29~40) — PPT SmartArt "계층/관계/피라미드"
 
@@ -74,14 +74,14 @@
 |---|---|---|---|---|
 | 29 | `concept-map` | ConceptMap | 개념 연결 관계망 | |
 | 30 | `actor-map` | ActorMap | 인물·집단 관계 구도 | |
-| 31 | `pyramid` | Pyramid | 계층·위계 (아래 넓음) | |
+| 31 | `pyramid` | Pyramid | 계층·위계 (아래 넓음) · 라이트 광택 표준 | |
 | 32 | `inverted-pyramid` | InvertedPyramid | 역피라미드 (위 넓음·필터링) | NEW |
-| 33 | `trinity` | Trinity | 셋이 모여 하나 (삼위일체) | |
+| 33 | `trinity` | Trinity | 셋이 모여 하나 (삼위일체) · 라이트 광택 표준 | |
 | 34 | `tree-diagram` | TreeDiagram | 조직도·분류 트리 | |
-| 35 | `hub-spoke` | HubSpoke / Mindmap | 한 중심에서 방사 | NEW |
+| 35 | `hub-spoke` | HubSpoke / Mindmap | 한 중심에서 방사 · 라이트 광택 표준 | NEW |
 | 36 | `ladder` | Ladder | 발전·숙달 단계 계단 | |
 | 37 | `spectrum-line` | SpectrumLine | 연속 스펙트럼·입장 분포 | |
-| 38 | `venn` | VennDiagram | 교집합·공통/차이 | NEW |
+| 38 | `venn` | VennDiagram | 교집합·공통/차이 · 라이트 광택 표준 | NEW |
 | 39 | `balance-scale` | BalanceScale | 양팔 저울 균형/대립 | NEW |
 | 40 | `nested-target` | NestedTarget | 동심원·과녁 (포함 관계) | NEW |
 

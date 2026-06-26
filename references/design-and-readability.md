@@ -548,3 +548,20 @@ CDN:
 ## 7. 왜 라이트 배경인가
 
 글래스모피즘은 **라이트 배경일 때** 유리 질감이 살아난다. 다크 배경에서는 카드의 반투명함과 blur가 잘 보이지 않아 glassmorphism의 효과가 사라진다. 파스텔 메시 그라디언트 + 흰색 반투명 카드 + 파스텔 glow 조합이 이 테마의 핵심이다.
+
+## 도형 광택 공식 (라이트) — 도형은 투명 금지
+
+밝은 배경에서 SVG 도형(원·톱니·블록·호·노드)은 **불투명 그라데이션 + 안쪽 흰 하이라이트
++ 컬러 글로우 + 옅은 접지 그림자**로 입체 광택을 낸다. 반투명 단색 fill은 배경이 비쳐
+깨지므로 금지한다. (구현 헬퍼: `component-gallery.html`의 `glossCircle/glossRect/glossWedge/glossStroke/glossBlockStyle`.)
+
+- 채움(원·노드): `radial-gradient(38% 30%): lighten(accent,.5) → accent`
+- 채움(블록·호·바): `linear-gradient(135°): lighten(accent,.32) → darken(accent,.1)`
+- 안쪽 하이라이트: 도형 위 흰 타원/줄 `rgba(255,255,255,.5)` + `mix-blend-mode:soft-light`
+- 글로우+접지: `filter` 안에
+  `feDropShadow(0,0,4, accent, .40)` + `feDropShadow(0,3,5, #0F172A, .16)`
+- 가장자리: `stroke="rgba(255,255,255,.7)" stroke-width="1"`
+- 겹침(벤다이어그램) 예외: 흰 inner plate 위에서만 두 원을 `mix-blend-mode:multiply` 반투명으로.
+  페이지 배경이 직접 비치지 않게 한다.
+
+카드/패널 컨테이너는 기존 glass(반투명+blur) 유지. 도형 본체에는 적용하지 않는다.
