@@ -45,6 +45,10 @@ ok("27 반투명 단색 fill 없음", !/fill="rgba\(255,255,255,\.62\)"/.test(r2
 ok("27 그라데이션 fill 사용", /fill="url\(#rg/.test(r27));
 ok("27 글로우 필터 사용", /filter="url\(#gw/.test(r27));
 
+const r38 = renderOf(38);
+ok("38 흰 inner plate 존재", /fill="#fff"|fill="#ffffff"/.test(r38));
+ok("38 multiply 블렌드 사용", /mix-blend-mode:multiply/.test(r38));
+
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
 let failed = 0;
 for (const c of checks) {
