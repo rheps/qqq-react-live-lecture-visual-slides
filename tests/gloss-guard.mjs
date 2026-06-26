@@ -19,9 +19,10 @@ ok("glossBlockStyle 정의", /const glossBlockStyle\s*=/.test(html));
 
 // --- 컴포넌트 render 추출 헬퍼 (이후 태스크에서 사용) ---
 export function renderOf(n) {
-  const re = new RegExp(`\\{n:${n},[\\s\\S]*?(?=\\n\\{n:|\\n\\];)`);
+  const re = new RegExp(`\\{n:${n},[\\s\\S]*?(?=\\r?\\n\\{n:|\\r?\\n\\];)`);
   const m = html.match(re);
-  return m ? m[0] : "";
+  if (!m) throw new Error(`renderOf: component n:${n} not found (check array format)`);
+  return m[0];
 }
 
 // (컴포넌트별 체크는 이후 태스크에서 이 파일에 추가)
