@@ -138,8 +138,10 @@
   @keyframes aGrowCIn{0%{transform:scale(0);opacity:.35}100%{transform:scale(1);opacity:1}}
   @keyframes aQMarkIn{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.3)}60%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
   /* ── 생명 레이어(영구·비파괴) ── */
-  @keyframes aCycleHi{0%{filter:brightness(1.18);transform:scale(1.05)}12%{filter:brightness(1.18);transform:scale(1.05)}26%,100%{filter:brightness(.82);transform:scale(1)}}
-  @keyframes aAlt{0%{filter:brightness(1.12);transform:scale(1.03)}40%{filter:brightness(1.12);transform:scale(1.03)}55%,100%{filter:brightness(.8);transform:scale(.985)}}
+  /* 강조 순회: 크기 변화 없이 '밝기'만, 대비 낮게, 켜진 시간 길게(덜 산만하게) */
+  @keyframes aCycleHi{0%{filter:brightness(1.13)}35%{filter:brightness(1.13)}62%,100%{filter:brightness(.95)}}
+  /* 양쪽 번갈아: 크기 변화 없이 밝기만, 대비 낮게(덜 번쩍) */
+  @keyframes aAlt{0%{filter:brightness(1.08)}42%{filter:brightness(1.08)}57%,100%{filter:brightness(.94)}}
   @keyframes aChev{0%,100%{opacity:.6}40%{opacity:1}}
   @keyframes aBreath{0%,100%{transform:scale(.85);opacity:.4}50%{transform:scale(1.15);opacity:.75}}
   @keyframes aRipple{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}
@@ -282,9 +284,9 @@ const C=[
 {n:35,type:"hub-spoke",en:"HubSpoke / Mindmap",ko:"방사형",cat:"F",tag:"new",use:"한 중심에서 여러 갈래 방사. 마인드맵.",render:()=>{const cx=95,cy=85;const sp=[[95,22,"읽기",EM],[160,85,"쓰기",AM],[95,148,"말하기",RO],[30,85,"듣기",SK]];const cols=[BL,...sp.map(s=>s[3])];let lines="";sp.forEach(([x,y,t,f])=>{lines+=glossStroke(`M${cx} ${cy} L${x} ${y}`,f,2.5);});let nodes="";sp.forEach(([x,y,t,f])=>{nodes+=glossCircle(x,y,17,f)+`<text x="${x}" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff">${t}</text>`;});nodes+=glossCircle(cx,cy,24,BL)+`<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">국어</text>`;return Sg(190,170,lines+nodes,cols)}},
 {n:36,type:"ladder",en:"Ladder",ko:"계단",cat:"F",use:"발전·숙달 단계 계단.",render:()=>{const st=[["입문",BL],["숙련",EM],["전문",AM],["대가",RO]];return `<div style="display:flex;align-items:flex-end;gap:5px;height:130px">${st.map(([t,f],i)=>`<div style="display:flex;flex-direction:column;justify-content:flex-end;height:100%"><div style="${glossBlockStyle(f)}color:#fff;width:52px;height:${35+i*28}px;border-radius:7px 7px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:5px;font-size:11px;font-weight:800">${t}</div></div>`).join("")}</div>`}},
 {n:37,type:"spectrum-line",en:"SpectrumLine",ko:"스펙트럼",cat:"F",use:"연속 스펙트럼, 입장 분포.",render:()=>`<div style="width:100%;max-width:260px"><div style="height:12px;border-radius:999px;background:linear-gradient(90deg,${BL},${EM},${AM},${RO})"></div><div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:800"><span style="color:${BL}">진보</span><span style="color:${MUT}">중도</span><span style="color:${RO}">보수</span></div></div>`},
-{n:38,type:"venn",en:"VennDiagram",ko:"벤다이어그램",cat:"F",tag:"new",use:"교집합·공통점/차이점.",render:()=>Sg(200,150,`<rect x="6" y="6" width="188" height="138" rx="14" fill="#ffffff" filter="url(#gwx0F172A)"/><defs><clipPath id="vennLens"><circle cx="122" cy="75" r="52"/></clipPath></defs><circle cx="78" cy="75" r="52" fill="${BL}" opacity=".5"/><circle cx="122" cy="75" r="52" fill="${RO}" opacity=".5"/><circle cx="78" cy="75" r="52" fill="#7C3AED" opacity=".8" clip-path="url(#vennLens)"/><text x="48" y="81" text-anchor="middle" font-size="16" font-weight="900" fill="#1E3A8A">A</text><text x="152" y="81" text-anchor="middle" font-size="16" font-weight="900" fill="#9F1239">B</text><text x="100" y="80" text-anchor="middle" font-size="11.5" font-weight="900" fill="#ffffff">공통</text>`,[INK])},
+{n:38,type:"venn",en:"VennDiagram",ko:"벤다이어그램",cat:"F",tag:"new",use:"교집합·공통점/차이점.",render:()=>Sg(200,150,`<defs><clipPath id="vennLens"><circle cx="122" cy="75" r="52"/></clipPath></defs><circle cx="78" cy="75" r="52" fill="${BL}" opacity=".5"/><circle cx="122" cy="75" r="52" fill="${RO}" opacity=".5"/><circle cx="78" cy="75" r="52" fill="#7C3AED" opacity=".8" clip-path="url(#vennLens)"/><text x="48" y="81" text-anchor="middle" font-size="16" font-weight="900" fill="#1E3A8A">A</text><text x="152" y="81" text-anchor="middle" font-size="16" font-weight="900" fill="#9F1239">B</text><text x="100" y="80" text-anchor="middle" font-size="11.5" font-weight="900" fill="#ffffff">공통</text>`,[INK])},
 {n:39,type:"balance-scale",en:"BalanceScale",ko:"양팔 저울",cat:"F",tag:"new",use:"균형·대립·trade-off 무게 비교.",render:()=>{const post=`<path d="M100 40 L84 120 L116 120 Z" fill="${MUT}" opacity=".2"/><line x1="100" y1="38" x2="100" y2="120" stroke="${MUT}" stroke-width="4"/><line x1="74" y1="120" x2="126" y2="120" stroke="${MUT}" stroke-width="4" stroke-linecap="round"/>`;const beam=`<g class="js-beam"><line x1="44" y1="38" x2="156" y2="38" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="38" r="5.5" fill="${INK}"/></g>`;const panL=`<g class="js-panL"><line x1="44" y1="38" x2="44" y2="56" stroke="${MUT}" stroke-width="2"/>`+glossRect(22,56,44,28,BL,6)+`<text x="44" y="74" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">자유</text></g>`;const panR=`<g class="js-panR"><line x1="156" y1="38" x2="156" y2="56" stroke="${MUT}" stroke-width="2"/>`+glossRect(134,56,44,28,RO,6)+`<text x="156" y="74" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">평등</text></g>`;return Sg(200,150,post+panL+panR+beam,[BL,RO])}},
-{n:40,type:"nested-target",en:"NestedTarget",ko:"동심원·과녁",cat:"F",tag:"new",use:"포함 관계·범위 (개인⊂사회⊂국가).",render:()=>Sg(170,150,`<rect x="4" y="6" width="162" height="138" rx="14" fill="#ffffff" filter="url(#gwx0F172A)"/><circle cx="85" cy="75" r="65" fill="${BL}" opacity=".22"/><circle cx="85" cy="75" r="44" fill="${EM}" opacity=".34"/>`+glossCircle(85,75,22,AM)+`<text x="85" y="22" text-anchor="middle" font-size="11.5" font-weight="900" fill="#000">국가</text><text x="85" y="46" text-anchor="middle" font-size="11.5" font-weight="900" fill="#000">사회</text><text x="85" y="79" text-anchor="middle" font-size="11.5" font-weight="900" fill="#000">개인</text>`,[AM,INK])},
+{n:40,type:"nested-target",en:"NestedTarget",ko:"동심원·과녁",cat:"F",tag:"new",use:"포함 관계·범위 (개인⊂사회⊂국가).",render:()=>Sg(170,150,`<circle cx="85" cy="75" r="65" fill="${BL}" opacity=".22"/><circle cx="85" cy="75" r="44" fill="${EM}" opacity=".34"/>`+glossCircle(85,75,22,AM)+`<text x="85" y="22" text-anchor="middle" font-size="11.5" font-weight="900" fill="#000">국가</text><text x="85" y="46" text-anchor="middle" font-size="11.5" font-weight="900" fill="#000">사회</text><text x="85" y="79" text-anchor="middle" font-size="11.5" font-weight="900" fill="#000">개인</text>`,[AM,INK])},
 
 // ---- G 타임라인 ----
 {n:41,type:"timeline-dots",en:"TimelineDots",ko:"연표 점",cat:"G",use:"사건 3~5개 시간순.",render:()=>{const ev=[["1392","조선",BL],["1592","임진",AM],["1897","대한",EM]];const W=290;let r=`<line x1="20" y1="75" x2="${W-20}" y2="75" stroke="${GRID}" stroke-width="3"/>`;ev.forEach(([y,t,f],i)=>{const x=40+i*((W-80)/(ev.length-1));r+=glossCircle(x,75,9,f)+`<text x="${x}" y="55" text-anchor="middle" font-size="12" font-weight="900" fill="${f}">${y}</text><text x="${x}" y="98" text-anchor="middle" font-size="11" font-weight="700" fill="${MUT}">${t}</text>`;});return Sg(W,120,r,ev.map(e=>e[2]))}},
@@ -420,12 +422,25 @@ function smilRotate(el,vals,dur){
 
 // ===== 생명 레이어 헬퍼 (정착 후 영구·비파괴) =====
 function _items(stage, els){ return Array.isArray(els) ? els : [...stage.querySelectorAll(els)]; }
+// 단계 사이 구분자(화살표 →, 얇은 연결선 등)를 뺀 '실제 단계 박스'만 — 순차 강조가 단계만 돌도록
+function stepEls(stage){ return kids(stage).filter(e=>{ const t=(e.textContent||"").trim(); return t.length>0 && !/^[→←↑↓⇒⇨·|‹›〉〈–—-]+$/.test(t); }); }
 
-// 1 강조 순회: 조각/카드/층을 하나씩 차례로 강조
+// 1 강조 순회: 한 번에 '하나씩' 순서대로(겹침 없음). 밝은 구간을 정확히 1/n로 잡아 시간순 보장.
+// 크기 변화 없이 밝기만, 대비 낮게. (WAAPI로 개수에 맞춰 동적 타이밍)
 function cycleHighlight(stage, els, o={}){
-  const {step=0.9}=o; const list=_items(stage, els||":scope > *"); const n=list.length; if(!n) return;
-  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; el.style.transformOrigin="center";
-    A(el,"aCycleHi",{dur:n*step,delay:i*step,rep:"infinite",ease:"ease-in-out"}); });
+  const {step=1.25, on=1.13, off=0.95}=o;
+  const list=_items(stage, els||":scope > *"); const n=list.length; if(!n) return;
+  const dur=n*step*1000, frac=1/n;
+  list.forEach((el,i)=>{
+    el.style.filter=`brightness(${off})`;            // 대기 중엔 기준(살짝 낮은 밝기)
+    if(!el.animate){ return; }                       // WAAPI 미지원 시 정적 유지
+    el.animate([
+      {filter:`brightness(${on})`,  offset:0},
+      {filter:`brightness(${on})`,  offset:frac*0.6},// 켜진 상태로 유지
+      {filter:`brightness(${off})`, offset:frac},    // 자기 슬롯 끝나면 꺼짐(다음이 켜지기 전)
+      {filter:`brightness(${off})`, offset:1}
+    ], {duration:dur, delay:i*step*1000, iterations:Infinity, easing:"ease-in-out"});
+  });
 }
 // 2 양쪽 번갈아: 두(또는 N) 영역 교대 강조
 function altEmphasis(stage, els, o={}){
@@ -458,14 +473,20 @@ function pulseLife(stage, sel, o={}){
   const {dur=1.6}=o; const t=stage.querySelector(sel)||stage.firstElementChild; if(!t) return;
   t.style.transformBox="fill-box"; t.style.transformOrigin="center"; A(t,"aPulseLife",{dur,rep:"infinite",ease:"ease-in-out"});
 }
-// 8 파동 펄스: 중심(cx,cy)에서 SVG 링이 퍼짐
+// 8 파동 펄스: 중심(cx,cy) 고정, 반지름(r)만 키워 바깥으로 퍼짐(SMIL — 날아가지 않음)
 function ripple(stage, cx, cy, o={}){
-  const {color=TL,dur=2.6,n=3,r0=14}=o; const svg=stage.querySelector("svg"); if(!svg) return;
+  const {color=TL,dur=2.8,n=3,r0=10,r1=62}=o; const svg=stage.querySelector("svg"); if(!svg) return;
   for(let i=0;i<n;i++){ const c=document.createElementNS(SVGNS,"circle");
     c.setAttribute("cx",cx); c.setAttribute("cy",cy); c.setAttribute("r",r0);
     c.setAttribute("fill","none"); c.setAttribute("stroke",color); c.setAttribute("stroke-width","2.5");
-    c.style.transformBox="fill-box"; c.style.transformOrigin=`${cx}px ${cy}px`;
-    A(c,"aRipple",{dur,delay:i*(dur/n),rep:"infinite",ease:"ease-out"});
+    const begin=(i*dur/n)+"s";
+    const aR=document.createElementNS(SVGNS,"animate");
+    aR.setAttribute("attributeName","r"); aR.setAttribute("values",`${r0};${r1}`);
+    aR.setAttribute("dur",dur+"s"); aR.setAttribute("begin",begin); aR.setAttribute("repeatCount","indefinite"); aR.setAttribute("calcMode","spline"); aR.setAttribute("keyTimes","0;1"); aR.setAttribute("keySplines",".2 .6 .4 1");
+    const aO=document.createElementNS(SVGNS,"animate");
+    aO.setAttribute("attributeName","opacity"); aO.setAttribute("values","0.85;0");
+    aO.setAttribute("dur",dur+"s"); aO.setAttribute("begin",begin); aO.setAttribute("repeatCount","indefinite");
+    c.appendChild(aR); c.appendChild(aO);
     svg.insertBefore(c, svg.firstChild); }
 }
 // 9 반짝임: 좌표 목록 위에 ✦ 스파클을 깜빡임 (pts: [[x,y],...] 또는 sel)
@@ -487,12 +508,19 @@ function sparkle(stage, pts, o={}){
   });
 }
 // 10 광택 스윕: 막대/카드 위로 빛줄기가 지나감
+function _sheenStreak(host, dur, delay){
+  if(getComputedStyle(host).position==="static") host.style.position="relative";
+  host.style.overflow="hidden";
+  const s=document.createElement("div");
+  s.style.cssText=`position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);pointer-events:none;z-index:3`;
+  host.appendChild(s); A(s,"aSheen",{dur,delay,rep:"infinite",ease:"ease-in-out"});
+}
 function sheen(stage, els, o={}){
-  const {gap=0.4,dur=3.0}=o; const list=_items(stage, els);
-  list.forEach((el,i)=>{ if(getComputedStyle(el).position==="static") el.style.position="relative";
-    el.style.overflow="hidden"; const s=document.createElement("div");
-    s.style.cssText=`position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);pointer-events:none`;
-    el.appendChild(s); A(s,"aSheen",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+  const {gap=0.4,dur=3.0}=o; const list=_items(stage, els).filter(Boolean);
+  // SVG 노드엔 HTML 스트릭을 못 붙이므로, SVG가 섞이면 stage 전체를 한 번 쓸어준다
+  const html=list.filter(el=>el.namespaceURI!==SVGNS), svg=list.filter(el=>el.namespaceURI===SVGNS);
+  html.forEach((el,i)=>_sheenStreak(el, dur, i*gap));
+  if(svg.length || !list.length) _sheenStreak(stage, dur, 0);
 }
 // 11 미세 부유
 function floatBob(stage, sel, o={}){
@@ -618,12 +646,9 @@ const LIFE = {
   58:s=>sheen(s, kids(s).map(r=>r.lastElementChild).filter(Boolean)),
   60:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
   61:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
-  62:s=>{ const ps=[...s.querySelectorAll("polygon")]; const data=ps[ps.length-1];
-        const pts=(data?.getAttribute("points")||"").trim().split(/\s+/).map(pr=>pr.split(",").map(Number));
-        sparkle(s, pts, {color:BL,size:13}); },
   // 텍스트류 (A)
-  1:s=>breatheGlow(s, ".kw, h1, .big, :scope *", {color:AM}),
-  2:s=>breatheGlow(s, ":scope *", {color:BL}),
+  1:s=>sheen(s, [s.firstElementChild].filter(Boolean)),
+  2:s=>sheen(s, [s.firstElementChild].filter(Boolean)),
   3:s=>sheen(s, [s.firstElementChild].filter(Boolean)),
   5:s=>pulseLife(s, ".quote-mark, :scope *"),
   6:s=>sheen(s, [s.querySelector(".divider, hr, .ln")||s.firstElementChild].filter(Boolean)),
@@ -631,25 +656,21 @@ const LIFE = {
   // 카드·목록 (B)
   8:s=>cycleHighlight(s, kids(s)),
   9:s=>cycleHighlight(s, kids(s)),
-  10:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+8])),
-  11:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+8])),
-  12:s=>dirPulse(s, ".num, .badge, :scope > *"),
-  13:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+14,e.offsetTop+e.offsetHeight/2])),
+  12:s=>cycleHighlight(s, kids(s)),
+  13:s=>sheen(s, kids(s)),
   48:s=>sheen(s, kids(s)),
-  51:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+14,e.offsetTop+e.offsetHeight/2])),
   // 비교 (C)
   14:s=>altEmphasis(s, kids(s)),
-  15:s=>dirPulse(s, "path, .arrow, :scope > *"),
+  15:s=>cycleHighlight(s, stepEls(s)),
   16:s=>altEmphasis(s, kids(s)),
-  17:s=>{ altEmphasis(s, kids(s).filter(e=>!/vs/i.test(e.textContent))); pulseLife(s, ".vs, .badge"); },
   18:s=>cycleHighlight(s, kids(s)),
   // 흐름 (D)
-  19:s=>dirPulse(s, "path, polyline, .arrow, :scope > *"),
-  20:s=>lineDots(s,[BL,EM,AM,RO]),
-  21:s=>dirPulse(s, ":scope > *"),
+  19:s=>cycleHighlight(s, stepEls(s)),
+  20:s=>cycleHighlight(s, stepEls(s)),
+  21:s=>cycleHighlight(s, stepEls(s)),
   22:s=>dirPulse(s, "path, polyline, .arrow"),
-  23:s=>dirPulse(s, "path, polyline, .arrow, :scope > *"),
-  24:s=>dirPulse(s, ".chev, path, :scope > *"),
+  23:s=>cycleHighlight(s, stepEls(s)),
+  24:s=>cycleHighlight(s, stepEls(s)),
   25:s=>cycleHighlight(s, kids(s)),
   // 관계·구조 (F)
   29:s=>lineDots(s,[BL,EM,AM,RO]),
@@ -658,33 +679,24 @@ const LIFE = {
   32:s=>cycleHighlight(s, kids(s)),
   33:s=>lineDots(s,[BL,EM,RO]),
   34:s=>lineDots(s,[BL,EM,AM]),
-  36:s=>dirPulse(s, ":scope > *"),
-  40:s=>ripple(s, 85, 75, {color:AM}),
+  36:s=>cycleHighlight(s, kids(s)),
   // 타임라인 (G)
-  41:s=>axisMarker(s,{color:RO}),
+  41:s=>cycleHighlight(s, [...s.querySelectorAll("circle")]),
   42:s=>cycleHighlight(s, kids(s)),
-  43:s=>breatheGlow(s, ".moment, :scope *", {color:BL}),
+  43:s=>sheen(s, [s.firstElementChild].filter(Boolean)),
   // 수업 (H)
-  44:s=>floatBob(s, ".bubble, :scope *"),
-  46:s=>{ const ok=s.querySelector("span"); if(ok) sparkle(s,[[ok.offsetLeft+ok.offsetWidth/2, ok.offsetTop+ok.offsetHeight/2]],{color:EM}); },
   47:s=>sparkle(s, [...s.querySelectorAll(".check, span")].slice(0,1).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+e.offsetHeight/2])),
   // 마무리 (I)
   49:s=>lineDots(s,[EM,AM,SK,RO]),
-  50:s=>breatheGlow(s, ":scope *", {color:AM}),
   // 차트 (J, K)
-  52:s=>sparkle(s, [[ (s.firstElementChild?.offsetWidth||120)/2, (s.firstElementChild?.offsetHeight||60)/2 ]], {color:AM}),
-  53:s=>sheen(s, [...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)),
+  53:s=>cycleHighlight(s, [...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)),
   54:s=>sheen(s, kids(s).map(it=>it.lastElementChild&&it.lastElementChild.firstElementChild).filter(Boolean)),
   55:s=>sheen(s, [...s.querySelectorAll("line")]),
   56:s=>{ const p=s.querySelector("polyline,path[fill='none']"); if(p) flowDot(s,p.getAttribute("d")||polyToPath(p),BL,{dur:2.6}); },
   57:s=>[...s.querySelectorAll("line,polyline")].forEach((p,i)=>flowDot(s, lineToPath(p), col(i), {dur:2.4,delay:i*0.3})),
   59:s=>sheen(s, [s.querySelector("polygon")].filter(Boolean)),
-  63:s=>sparkle(s, "circle"),
-  64:s=>sparkle(s, "circle"),
-  65:s=>dirPulse(s, "rect"),
-  66:s=>dirPulse(s, "path, polygon, :scope > *"),
-  67:s=>sheen(s, [...s.querySelectorAll("rect")]),
-  68:s=>dirPulse(s, "rect"),
+  65:s=>cycleHighlight(s, [...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)),
+  66:s=>cycleHighlight(s, [...s.querySelectorAll("path,polygon,rect")].filter(el=>{const f=el.getAttribute("fill");return f&&f!=="none";})),
   69:s=>{ sheen(s,[...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)); const p=s.querySelector("polyline,path[fill='none']"); if(p) flowDot(s,p.getAttribute("d")||polyToPath(p),RO,{dur:2.6}); },
   // 로고 (L)
   82:s=>sheen(s, kids(s)),
