@@ -293,7 +293,7 @@ const SHOW={
       const mk=document.createElement("div");
       mk.style.cssText=`position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid ${INK};box-shadow:0 3px 9px rgba(15,23,42,.3);transform:translateX(-50%);left:6%`;
       mk.style.top=(bar.offsetTop+bar.offsetHeight/2-10)+"px"; mk.style.setProperty("--settle","87%"); o.appendChild(mk);
-      A(mk,"aSweepSettle",{dur:5,ease:EZL}); },
+      A(mk,"aSweepSettle",{dur:5,ease:EZL,rep:"1"}); },
   // 39 양팔 저울: 수평에서 시작 → 오른쪽(평등)이 무거워 내려감. 보는 회전, 추는 수평 유지하며 상하 이동
   39:s=>{ const kt="0;0.16;0.30;0.44;0.74;1", ks=".3 0 .3 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.5 0 .4 1", dur="4.4s";
     const mk=(el,type,vals)=>{ if(!el)return; const a=document.createElementNS(SVGNS,"animateTransform");
