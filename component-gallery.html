@@ -136,10 +136,11 @@
   @keyframes aDrawIn{0%{stroke-dashoffset:var(--len)}100%{stroke-dashoffset:0}}
   @keyframes aWipeXIn{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
   @keyframes aGrowCIn{0%{transform:scale(0);opacity:.35}100%{transform:scale(1);opacity:1}}
+  @keyframes aQMarkIn{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.3)}60%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
   /* ── 생명 레이어(영구·비파괴) ── */
   @keyframes aCycleHi{0%{filter:brightness(1.18);transform:scale(1.05)}12%{filter:brightness(1.18);transform:scale(1.05)}26%,100%{filter:brightness(.82);transform:scale(1)}}
   @keyframes aAlt{0%{filter:brightness(1.12);transform:scale(1.03)}40%{filter:brightness(1.12);transform:scale(1.03)}55%,100%{filter:brightness(.8);transform:scale(.985)}}
-  @keyframes aChev{0%,100%{opacity:.25}40%{opacity:1}}
+  @keyframes aChev{0%,100%{opacity:.6}40%{opacity:1}}
   @keyframes aBreath{0%,100%{transform:scale(.85);opacity:.4}50%{transform:scale(1.15);opacity:.75}}
   @keyframes aRipple{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}
   @keyframes aSpk{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(20deg)}}
@@ -546,7 +547,7 @@ const SHOW={
   45:s=>{ const d=s.firstElementChild; d.style.position="relative"; d.style.paddingTop="18px";
       const q=document.createElement("div"); q.textContent="?";
       q.style.cssText=`position:absolute;left:50%;top:-8px;font-size:30px;font-weight:900;color:${BL};text-shadow:0 2px 6px ${BL}55`;
-      d.insertBefore(q,d.firstChild); enterA(q,"aQMark",{dur:3.2,ease:EZ}); },
+      d.insertBefore(q,d.firstChild); enterA(q,"aQMarkIn",{dur:1.2,ease:EZ}); },
   // 46 OX 퀴즈: 두 선택지 등장 후 정답(O)에 동그라미가 그려짐
   46:s=>{ const box=s.firstElementChild; box.style.position="relative";
       const q=box.firstElementChild; if(q) q.style.marginBottom="24px";   // 글자와 OX 사이 간격 넓힘

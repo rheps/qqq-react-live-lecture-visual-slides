@@ -75,6 +75,10 @@ const showBlk = html.slice(html.indexOf("const SHOW="), html.indexOf("function g
 const bareEntrance = /[^A-Za-z]A\(\s*[A-Za-z_$][\w$]*\s*,\s*"a(RiseT|RiseB|SlideL|SlideR|Pop|Fade|GrowY|GrowX|Draw|WipeX|GrowC|Bloom)"/;
 ok("SHOW 진입 모션에 직접 A(...) 무한 루프 잔존 없음(전부 enterA+*In)", !bareEntrance.test(showBlk));
 
+// enterA 호출에 쓰인 모든 키프레임은 정착(숨김 종료 아님)이어야 한다 — #45류 회귀 방지
+const enterKfs = [...new Set([...html.matchAll(/enterA\([^,]+,\s*"([^"]+)"/g)].map(m=>m[1]))];
+for (const kf of enterKfs) ok(`enterA 키프레임 ${kf} 정착(숨김 종료 아님)`, !endsHidden(kf));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
