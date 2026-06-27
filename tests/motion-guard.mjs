@@ -55,13 +55,16 @@ const showBlock = html.slice(html.indexOf("const SHOW="), html.indexOf("function
 for (const n of [28,60,61]) ok(`SHOW[${n}] bloomWedges 미사용`, !new RegExp(`${n}:s=>bloomWedges`).test(showBlock));
 ok("SHOW[58] aPush 미사용", !/aPush/.test(showBlock));
 ok("SHOW[62] aGrowC 미사용(1회는 aGrowCIn만)", !/"aGrowC"/.test(showBlock));
-for (const n of [28,58,60,61,62]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(html.split("const LIFE")[1]||""));
+// (62는 사용자 재배정으로 0 정지 — 아래 0-정지 검사에서 다룸)
+for (const n of [28,58,60,61]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(html.split("const LIFE")[1]||""));
 
 // Task 6: 0(정지) 7종은 LIFE 엔트리가 없어야 한다
 const lifeBlock = html.split("const LIFE")[1] || "";
 for (const n of [4,38,70,71,72,73,74]) ok(`LIFE[${n}] 없음(정지)`, !new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
-// Task 6: 효과 있는 대표 번호 존재 확인
-for (const n of [1,2,3,5,6,7,8,12,14,17,19,20,29,31,40,41,43,44,46,53,56,63,65,82]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
+// 효과 있는 대표 번호 존재 확인 (사용자 재배정 반영: 17·44·63 등은 0으로 제거됨)
+for (const n of [1,2,3,5,6,7,8,12,14,19,20,29,31,41,43,53,56,65,82]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
+// 사용자 재배정으로 0(정지) 된 컴포넌트는 LIFE 엔트리가 없어야 한다
+for (const n of [10,11,17,40,44,46,50,51,52,62,63,64,67,68]) ok(`LIFE[${n}] 없음(0 정지)`, !new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
 
 // ===== 키트 동기화 가드 (Task 7) =====
 const kit = readFileSync(join(root, "references", "qqq-component-kit.js"), "utf8");
