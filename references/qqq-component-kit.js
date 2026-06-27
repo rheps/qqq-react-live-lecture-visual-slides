@@ -100,7 +100,12 @@ const C=[
 
 // ---- E 주기 ----
 {n:26,type:"loop-diagram",en:"LoopDiagram / CycleDiagram",ko:"순환 루프",cat:"E",use:"반복 개선 사이클, PDCA.",render:()=>{const cx=85,cy=85,R=56;const st=[["P",BL],["D",EM],["C",AM],["A",RO]];let r=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${GRID}" stroke-width="2" stroke-dasharray="5 5"/>`;st.forEach(([t,f],i)=>{const a=-90+i*90;const x=cx+R*Math.cos(a*Math.PI/180),y=cy+R*Math.sin(a*Math.PI/180);r+=glossCircle(x,y,17,f)+`<text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">${t}</text>`;});return Sg(170,170,r,st.map(s=>s[1]))}},
-{n:27,type:"gear-cycle",en:"GearCycle",ko:"톱니바퀴",cat:"E",tag:"new",use:"맞물려 도는 톱니바퀴. PPT 기어 SmartArt.",render:()=>{const gear=(cx,cy,R,f,lbl,above)=>{const k=gid(f);let teeth="";for(let i=0;i<10;i++){const a=i*36*Math.PI/180;const x1=cx+R*Math.cos(a),y1=cy+R*Math.sin(a),x2=cx+(R+7)*Math.cos(a),y2=cy+(R+7)*Math.sin(a);teeth+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${f}" stroke-width="6" stroke-linecap="round"/>`;}const ly=above?cy-R-11:cy+R+18;return `<g filter="url(#gw${k})">${teeth}<circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#rg${k})" stroke="rgba(255,255,255,.7)" stroke-width="1"/></g><ellipse cx="${cx}" cy="${cy-R*.4}" rx="${R*.55}" ry="${R*.3}" fill="rgba(255,255,255,.5)" style="mix-blend-mode:soft-light"/><circle cx="${cx}" cy="${cy}" r="${R*.4}" fill="${lighten(f,.78)}"/><text x="${cx}" y="${ly}" text-anchor="middle" font-size="12" font-weight="800" fill="${f}">${lbl}</text>`;};return Sg(220,162,gear(74,57,30,BL,"투입")+gear(135,79,34,EM,"전환",true)+gear(112,123,18,AM,"산출"),[BL,EM,AM])}},
+{n:27,type:"gear-cycle",en:"GearCycle",ko:"톱니바퀴",cat:"E",tag:"new",use:"맞물려 도는 톱니바퀴. PPT 기어 SmartArt.",render:()=>{
+  const gearPath=(cx,cy,inner,outer,count)=>{let d="";for(let i=0;i<count*2;i++){const r=i%2?inner:outer,a=-Math.PI/2+i*Math.PI/count,x=(cx+r*Math.cos(a)).toFixed(1),y=(cy+r*Math.sin(a)).toFixed(1);d+=(i?"L":"M")+x+" "+y;}return d+"Z";};
+  const gear=(cx,cy,R,f,lbl,above)=>{const k=gid(f),root=R,outer=R+9,ly=above?cy-outer-10:cy+outer+18;return `<g filter="url(#gw${k})"><path d="${gearPath(cx,cy,root,outer,12)}" fill="url(#lg${k})" stroke="rgba(255,255,255,.72)" stroke-width="1.4"/><circle cx="${cx}" cy="${cy}" r="${R*.62}" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.52)" stroke-width="1"/><circle cx="${cx}" cy="${cy}" r="${R*.34}" fill="${lighten(f,.72)}" stroke="${darken(f,.16)}" stroke-width="1.2"/><circle cx="${cx}" cy="${cy}" r="${R*.13}" fill="${darken(f,.18)}"/></g><text x="${cx}" y="${ly}" text-anchor="middle" font-size="12.5" font-weight="900" fill="${f}">${lbl}</text>`;};
+  const links=`<path d="M82 72 C98 58 112 58 127 68" fill="none" stroke="${GRID}" stroke-width="7" stroke-linecap="round"/><path d="M103 103 C108 94 115 88 124 84" fill="none" stroke="${GRID}" stroke-width="6" stroke-linecap="round"/>`;
+  return Sg(240,190,links+gear(72,68,29,BL,"투입",true)+gear(148,78,34,EM,"전환",true)+gear(110,126,21,AM,"산출"),[BL,EM,AM,INK]);
+}},
 {n:28,type:"segmented-cycle",en:"SegmentedCycle",ko:"블록 순환",cat:"E",tag:"new",use:"호(arc) 블록이 도는 순환. PPT 블록 주기.",render:()=>{const cx=85,cy=85,R=58,r0=34;const st=[["봄",EM],["여름",RO],["가을",AM],["겨울",BL]];let p="";const wedge=(a0,a1,fill)=>{const rad=d=>d*Math.PI/180;const x0=cx+R*Math.cos(rad(a0)),y0=cy+R*Math.sin(rad(a0)),x1=cx+R*Math.cos(rad(a1)),y1=cy+R*Math.sin(rad(a1)),x2=cx+r0*Math.cos(rad(a1)),y2=cy+r0*Math.sin(rad(a1)),x3=cx+r0*Math.cos(rad(a0)),y3=cy+r0*Math.sin(rad(a0));return glossWedge(`M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r0} ${r0} 0 0 0 ${x3} ${y3} Z`,fill);};st.forEach(([t,f],i)=>{const a0=-88+i*90,a1=a0+84;p+=wedge(a0,a1,f);const am=(a0+a1)/2*Math.PI/180,rm=(R+r0)/2;p+=`<text x="${cx+rm*Math.cos(am)}" y="${cy+rm*Math.sin(am)+4}" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">${t}</text>`;});return Sg(170,170,p,st.map(s=>s[1]))}},
 
 // ---- F 계층·구조 ----
@@ -264,9 +269,9 @@ const SHOW={
   // 26 순환 루프: 마디 순차 + 원 둘레를 도는 점
   26:s=>{ pop(s,"circle",{base:0.3,gap:0.22});
       flowDot(s,"M85 29 a56 56 0 1 1 -0.1 0",BL,{dur:3.4,delay:0,r:4}); },
-  // 27 톱니바퀴: 맞물려 회전
+  // 27 톱니바퀴: 맞물려 천천히 회전
   27:s=>{ const gs=[...s.querySelectorAll("g")].filter(g=>g.getAttribute("filter"));
-      const cf=[{t:12,d:"normal"},{t:13.5,d:"reverse"},{t:7,d:"normal"}];
+      const cf=[{t:18,d:"normal"},{t:21,d:"reverse"},{t:14,d:"normal"}];
       gs.forEach((g,i)=>{const c=cf[i]||cf[0]; A(g,"aSpin",{dur:c.t,ease:"linear",box:"fill-box",origin:"center",dir:c.d});}); },
   // 28 블록 순환: 봄→여름→가을→겨울 차례로 피었다 완전히 사라진 뒤 봄이 다시 (겹침 없음)
   28:s=>bloomWedges(s),
@@ -283,7 +288,7 @@ const SHOW={
   38:s=>{},
   // 40 동심원: 애니메이션 없이 정지
   40:s=>{},
-  // 37 스펙트럼: 마커가 좌우로 왔다갔다 하다 중앙(중도)에 정착
+  // 37 스펙트럼: 마커가 좌우로 왔다갔다 하다 오른쪽(긍정)에 정착
   37:s=>{ const o=s.firstElementChild; o.style.position="relative"; const bar=o.firstElementChild;
       const mk=document.createElement("div");
       mk.style.cssText=`position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid ${INK};box-shadow:0 3px 9px rgba(15,23,42,.3);transform:translateX(-50%);left:6%`;
