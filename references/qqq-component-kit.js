@@ -1,156 +1,12 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>qqq-live 컴포넌트 카탈로그 (번호별)</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>
-  :root{
-    --blue:#3B82F6; --sky:#0EA5E9; --teal:#14B8A6; --emerald:#10B981;
-    --amber:#F59E0B; --rose:#F43F5E; --ink:#0F172A; --mut:#475569; --grid:#E2E8F0;
-  }
-  *{box-sizing:border-box; word-break:keep-all; overflow-wrap:break-word;}
-  html,body{margin:0; padding:0;}
-  body{
-    font-family:"Pretendard","Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif;
-    color:var(--ink);
-    background:linear-gradient(135deg,#EFF6FF 0%,#F0FDFA 50%,#F0F9FF 100%);
-    background-attachment:fixed;
-    min-height:100vh;
-  }
-  /* 떠다니는 배경 blob */
-  .blob{position:fixed; border-radius:50%; filter:blur(60px); z-index:0; pointer-events:none;}
-  .blob1{top:-12vh; left:-8vw; width:46vh; height:46vh;
-    background:radial-gradient(circle,rgba(59,130,246,.22) 0%,transparent 70%); animation:float1 20s ease-in-out infinite;}
-  .blob2{bottom:-14vh; right:-6vw; width:52vh; height:52vh;
-    background:radial-gradient(circle,rgba(20,184,166,.18) 0%,transparent 70%); animation:float2 24s ease-in-out infinite;}
-  @keyframes float1{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,30px) scale(1.06)}}
-  @keyframes float2{0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-40px,-26px) scale(1.08)}}
+/* qqq-component-kit.js — component-gallery.html 와 100% 동일한
+ * 시각 컴포넌트 렌더 + 모션 엔진을 자기완결로 담은 인라인용 키트.
+ * 스킬이 생성하는 덱에 통째로 <script>(클래식)로 인라인하면 window.QQQ 가 노출된다.
+ *   QQQ.mount(번호, domEl)  → el 안에 컴포넌트를 그리고 갤러리와 동일한 루프 모션을 입힌다
+ *   QQQ.render(번호)        → 컴포넌트 SVG/HTML 문자열만 반환
+ * 자동 생성물 — 직접 수정 금지. 갤러리를 고친 뒤 'node references/build-kit.js'로 재생성.
+ */
+(function(){
 
-  .wrap{position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:40px 28px 120px;}
-
-  header.hero{text-align:center; margin-bottom:14px;}
-  header.hero h1{font-size:42px; font-weight:900; letter-spacing:-.03em; margin:0 0 10px;}
-  header.hero h1 .ac{
-    color:var(--blue);
-    background:linear-gradient(135deg,var(--blue),var(--sky));
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
-  header.hero p{font-size:17px; font-weight:500; color:var(--mut); margin:6px auto; max-width:760px; line-height:1.6;}
-  .legend{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0 6px;}
-  .lg{font-size:13px; font-weight:700; padding:5px 12px; border-radius:999px; background:rgba(255,255,255,.7);
-     border:1px solid rgba(255,255,255,.6); box-shadow:0 4px 14px rgba(0,0,0,.04);}
-  .lg .nw{color:var(--emerald);} .lg .rq{color:var(--amber);}
-
-  /* 카테고리 점프 내비 */
-  nav.jump{position:sticky; top:0; z-index:5; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
-    padding:14px 8px; margin:18px -8px 26px;
-    background:rgba(240,249,255,.78); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-    border-radius:16px; border:1px solid rgba(255,255,255,.6);}
-  nav.jump a{font-size:14px; font-weight:700; text-decoration:none; color:var(--mut);
-    padding:6px 13px; border-radius:999px; transition:all .2s;}
-  nav.jump a:hover{color:#fff; background:var(--blue); box-shadow:0 6px 16px rgba(59,130,246,.35);}
-
-  .cat{margin:46px 0 20px; display:flex; align-items:center; gap:14px;}
-  .cat h2{font-size:26px; font-weight:900; letter-spacing:-.02em; margin:0;}
-  .cat .rng{font-size:15px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--blue),var(--sky));
-    padding:4px 14px; border-radius:999px;}
-  .cat .ln{flex:1; height:2px; background:linear-gradient(90deg,var(--grid),transparent);}
-
-  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(370px,1fr)); gap:20px;}
-
-  .comp{
-    position:relative;
-    background:rgba(255,255,255,.66); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-    border:1px solid rgba(255,255,255,.55); border-radius:20px;
-    box-shadow:0 8px 32px rgba(0,0,0,.05), 0 0 22px rgba(59,130,246,.10);
-    padding:18px 18px 20px;
-    opacity:0; transform:scale(.92) translateY(16px);
-    transition:opacity .5s ease, transform .6s cubic-bezier(.175,.885,.32,1.275);
-  }
-  .comp.vis{opacity:1; transform:scale(1) translateY(0);}
-  .comp-head{display:flex; align-items:flex-start; gap:13px; margin-bottom:8px;}
-  .num{flex:none; width:44px; height:44px; border-radius:13px; display:flex; align-items:center; justify-content:center;
-    font-size:21px; font-weight:900; color:#fff; background:linear-gradient(135deg,var(--blue),var(--sky));
-    box-shadow:0 6px 16px rgba(59,130,246,.35);}
-  .names{flex:1; min-width:0;}
-  .names .en{font-size:19px; font-weight:900; letter-spacing:-.01em; line-height:1.2;}
-  .names .ko{font-size:14px; font-weight:600; color:var(--mut); margin-top:1px;}
-  .tags{display:flex; flex-wrap:wrap; gap:6px; margin:2px 0 8px;}
-  .t{font-size:11.5px; font-weight:700; padding:3px 9px; border-radius:7px;}
-  .t-type{background:#EEF2FF; color:#4338CA; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
-  .t-new{background:rgba(16,185,129,.14); color:#059669;}
-  .t-rq{background:rgba(245,158,11,.16); color:#B45309;}
-  .use{font-size:13.5px; font-weight:500; color:var(--mut); line-height:1.5; margin:0 0 13px;}
-  .note{font-size:12.5px; font-weight:600; color:#B45309; line-height:1.45; margin:-6px 0 12px;
-    background:rgba(245,158,11,.10); border-left:3px solid var(--amber); padding:7px 10px; border-radius:0 8px 8px 0;}
-
-  .stage{
-    position:relative; height:200px; border-radius:14px; overflow:hidden;
-    background:linear-gradient(135deg,#F4F9FF 0%,#F2FCFB 100%);
-    border:1px solid rgba(59,130,246,.10);
-    display:flex; align-items:center; justify-content:center; padding:14px;
-  }
-  .stage > *{max-width:100%; max-height:100%;}
-
-  /* 프리뷰 공용 미니 부품 */
-  .pv-chip{display:inline-block; background:#fff; border-radius:999px; padding:4px 11px; font-weight:700; font-size:12.5px; margin:3px; box-shadow:0 2px 8px rgba(0,0,0,.06);}
-  .pv-card{background:rgba(255,255,255,.85); backdrop-filter:blur(6px); border-radius:11px; padding:9px 11px; box-shadow:0 6px 16px rgba(0,0,0,.06);}
-  footer{text-align:center; margin-top:70px; font-size:13px; color:var(--mut); font-weight:500;}
-  @media(max-width:520px){ .grid{grid-template-columns:1fr;} header.hero h1{font-size:32px;} }
-
-  /* ===================== 모션 키트 (Remotion-풍 루프) ===================== */
-  /* 등장 → 유지 → 리셋 후 반복. 14%~86% 구간은 '정착' 상태로 길게 유지된다. */
-  @keyframes aRiseT{0%{opacity:0;transform:translateY(-15px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-15px)}}
-  @keyframes aRiseB{0%{opacity:0;transform:translateY(16px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(16px)}}
-  @keyframes aSlideL{0%{opacity:0;transform:translateX(-22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-22px)}}
-  @keyframes aSlideR{0%{opacity:0;transform:translateX(22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(22px)}}
-  @keyframes aPop{0%{opacity:0;transform:scale(.55)}11%{opacity:1;transform:scale(1.09)}19%,86%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.55)}}
-  @keyframes aFade{0%{opacity:0}15%,88%{opacity:1}100%{opacity:0}}
-  @keyframes aGrowY{0%{transform:scaleY(0)}17%,87%{transform:scaleY(1)}100%{transform:scaleY(0)}}
-  @keyframes aGrowX{0%{transform:scaleX(0)}17%,87%{transform:scaleX(1)}100%{transform:scaleX(0)}}
-  @keyframes aDraw{0%{stroke-dashoffset:var(--len)}32%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:var(--len)}}
-  @keyframes aSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-  @keyframes aWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-11deg)}50%{transform:rotate(0)}75%{transform:rotate(11deg)}}
-  @keyframes aFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-  @keyframes aPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-  @keyframes aQMark{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.3)}28%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}82%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(0) scale(1)}}
-  @keyframes aSweepSettle{0%{left:6%}16%{left:92%}33%{left:13%}50%{left:82%}66%{left:38%}78%,100%{left:var(--settle,50%)}}
-  /* 블록·파이 조각: 피었다가 완전히 사라진 뒤 다음이 뜨도록 (겹침 없음) */
-  @keyframes aBloom{0%{opacity:0;transform:scale(.5)}6%{opacity:1;transform:scale(1.06)}12%{transform:scale(1)}55%{opacity:1;transform:scale(1)}63%{opacity:0;transform:scale(.5)}100%{opacity:0;transform:scale(.5)}}
-  /* 면(area)이 왼→오로 차올랐다 줄어듦 */
-  @keyframes aWipeX{0%{clip-path:inset(0 100% 0 0)}32%,86%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}
-  /* 가운데에서 퍼지듯 자람 (레이더 데이터) */
-  @keyframes aGrowC{0%{transform:scale(0);opacity:.35}24%{transform:scale(1);opacity:1}86%{transform:scale(1);opacity:1}100%{transform:scale(0);opacity:.35}}
-  /* 100% 스택: 두 영역이 서로 밀어내며 넓어졌다 줄었다 정착 */
-  @keyframes aPush{0%{width:var(--w)}15%{width:calc(var(--w) + 16%)}35%{width:calc(var(--w) - 12%)}55%{width:calc(var(--w) + 7%)}75%{width:calc(var(--w) - 3%)}90%,100%{width:var(--w)}}
-  @media (prefers-reduced-motion: reduce){ .stage *{animation:none !important;} }
-</style>
-</head>
-<body>
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-
-<div class="wrap">
-  <header class="hero">
-    <h1><span class="ac">qqq-live</span> 컴포넌트 카탈로그</h1>
-    <p>강의용 슬라이드 스킬에서 쓸 수 있는 모든 시각 컴포넌트를 번호로 정리했어요.
-       보고 마음에 드는 번호를 <b>"23번으로 해줘"</b>처럼 말하면 그대로 만들어 드립니다.</p>
-    <p style="font-size:14px;">테마는 <b>Modern Glassy Light</b> (블루·하늘·틸 파스텔 + 유리 카드 + spring-pop).
-       아래 미리보기는 모양 확인용 축소판이라 글씨가 작지만, 실제 슬라이드는 모든 글자 24px 이상으로 만들어집니다.</p>
-    <div class="legend">
-      <span class="lg"><span class="nw">NEW</span> = 이번에 추가 (PowerPoint 기본 도표)</span>
-      <span class="lg"><span class="rq">요청시</span> = 가독성 때문에 기본 추천에선 빠지지만 번호로 고르면 사용</span>
-    </div>
-  </header>
-
-  <nav class="jump" id="nav"></nav>
-  <div id="root"></div>
-
-  <footer>qqq-react-live-lecture-visual-slides · component-gallery.html · 번호 기준표는 references/component-registry.md</footer>
-</div>
-
-<script>
 // ===== 토큰 =====
 const BL="#3B82F6", SK="#0EA5E9", TL="#14B8A6", EM="#10B981", AM="#F59E0B", RO="#F43F5E",
       INK="#0F172A", MUT="#475569", GRID="#E2E8F0";
@@ -532,56 +388,22 @@ function animate(c,stage){
   try{ (SHOW[c.n] || (cc=>generic(c,stage)))(stage); }catch(e){}
 }
 
-// ===== 렌더링 =====
-const CATS={A:"텍스트 강조",B:"키워드·목록 (List)",C:"비교·관계",D:"흐름·과정 (Process)",E:"주기·순환 (Cycle)",F:"계층·구조 (Hierarchy)",G:"타임라인",H:"수업·발문",I:"정리·마무리",J:"데이터 차트 (권장)",K:"PPT 차트 추가분",L:"사료·출처",M:"표"};
-const order=["A","B","C","D","E","F","G","H","I","J","K","L","M"];
-const root=document.getElementById("root");
-const nav=document.getElementById("nav");
-
-order.forEach(cat=>{
-  const items=C.filter(c=>c.cat===cat);
-  if(!items.length)return;
-  const range=`${items[0].n}–${items[items.length-1].n}`;
-  const a=document.createElement("a"); a.href="#cat-"+cat; a.textContent=`${CATS[cat]} (${range})`; nav.appendChild(a);
-
-  const head=document.createElement("div"); head.className="cat"; head.id="cat-"+cat;
-  head.innerHTML=`<h2>${CATS[cat]}</h2><span class="rng">${range}</span><div class="ln"></div>`;
-  root.appendChild(head);
-
-  const grid=document.createElement("div"); grid.className="grid";
-  items.forEach(c=>{
-    const el=document.createElement("div"); el.className="comp"; el.id="c"+c.n;
-    const tags=[`<span class="t t-type">${c.type}</span>`];
-    if(c.tag==="new")tags.push(`<span class="t t-new">NEW</span>`);
-    if(c.tag==="rq")tags.push(`<span class="t t-rq">요청시</span>`);
-    el.innerHTML=`
-      <div class="comp-head">
-        <div class="num">${c.n}</div>
-        <div class="names"><div class="en">${c.en}</div><div class="ko">${c.ko}</div></div>
-      </div>
-      <div class="tags">${tags.join("")}</div>
-      <div class="use">${c.use}</div>
-      ${c.note?`<div class="note">⚠️ ${c.note}</div>`:""}
-      <div class="stage">${c.render()}</div>`;
-    grid.appendChild(el);
-  });
-  root.appendChild(grid);
-});
-
-// spring-pop 스크롤 등장 (모션 줄이기·미지원·인쇄 시엔 전부 즉시 표시)
-const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const all=document.querySelectorAll(".comp");
-if(reduce||!("IntersectionObserver"in window)){
-  all.forEach(el=>el.classList.add("vis"));
-}else{
-  const io=new IntersectionObserver((es)=>{es.forEach((e,i)=>{if(e.isIntersecting){const t=e.target,c=byN[+t.id.slice(1)];setTimeout(()=>{t.classList.add("vis");animate(c,t.querySelector(".stage"));},(i%6)*60);io.unobserve(t);}});},{threshold:.12, rootMargin:"0px 0px 120px 0px"});
-  all.forEach(el=>io.observe(el));
-  // IO가 한 번도 발화하지 않는 환경(배경 탭·임베드 등) 대비 폴백: 1.6초 후 아무 카드도 안 떴으면 전부 강제 구동
-  setTimeout(()=>{ if(![...all].some(el=>el.classList.contains("vis")))
-    all.forEach(el=>{el.classList.add("vis");animate(byN[+el.id.slice(1)],el.querySelector(".stage"));}); },1600);
-  // 인쇄 직전엔 안 보이는 카드까지 모두 펼친다(PDF 저장 대비)
-  window.addEventListener("beforeprint",()=>all.forEach(el=>el.classList.add("vis")));
+// ===== 키프레임 자동 주입 =====
+var __QQQ_KF="/* ===================== 모션 키트 (Remotion-풍 루프) ===================== */\n  /* 등장 → 유지 → 리셋 후 반복. 14%~86% 구간은 '정착' 상태로 길게 유지된다. */\n  @keyframes aRiseT{0%{opacity:0;transform:translateY(-15px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-15px)}}\n  @keyframes aRiseB{0%{opacity:0;transform:translateY(16px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(16px)}}\n  @keyframes aSlideL{0%{opacity:0;transform:translateX(-22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-22px)}}\n  @keyframes aSlideR{0%{opacity:0;transform:translateX(22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(22px)}}\n  @keyframes aPop{0%{opacity:0;transform:scale(.55)}11%{opacity:1;transform:scale(1.09)}19%,86%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.55)}}\n  @keyframes aFade{0%{opacity:0}15%,88%{opacity:1}100%{opacity:0}}\n  @keyframes aGrowY{0%{transform:scaleY(0)}17%,87%{transform:scaleY(1)}100%{transform:scaleY(0)}}\n  @keyframes aGrowX{0%{transform:scaleX(0)}17%,87%{transform:scaleX(1)}100%{transform:scaleX(0)}}\n  @keyframes aDraw{0%{stroke-dashoffset:var(--len)}32%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:var(--len)}}\n  @keyframes aSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}\n  @keyframes aWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-11deg)}50%{transform:rotate(0)}75%{transform:rotate(11deg)}}\n  @keyframes aFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}\n  @keyframes aPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}\n  @keyframes aQMark{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.3)}28%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}82%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(0) scale(1)}}\n  @keyframes aSweepSettle{0%{left:6%}16%{left:92%}33%{left:13%}50%{left:82%}66%{left:38%}78%,100%{left:var(--settle,50%)}}\n  /* 블록·파이 조각: 피었다가 완전히 사라진 뒤 다음이 뜨도록 (겹침 없음) */\n  @keyframes aBloom{0%{opacity:0;transform:scale(.5)}6%{opacity:1;transform:scale(1.06)}12%{transform:scale(1)}55%{opacity:1;transform:scale(1)}63%{opacity:0;transform:scale(.5)}100%{opacity:0;transform:scale(.5)}}\n  /* 면(area)이 왼→오로 차올랐다 줄어듦 */\n  @keyframes aWipeX{0%{clip-path:inset(0 100% 0 0)}32%,86%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}\n  /* 가운데에서 퍼지듯 자람 (레이더 데이터) */\n  @keyframes aGrowC{0%{transform:scale(0);opacity:.35}24%{transform:scale(1);opacity:1}86%{transform:scale(1);opacity:1}100%{transform:scale(0);opacity:.35}}\n  /* 100% 스택: 두 영역이 서로 밀어내며 넓어졌다 줄었다 정착 */\n  @keyframes aPush{0%{width:var(--w)}15%{width:calc(var(--w) + 16%)}35%{width:calc(var(--w) - 12%)}55%{width:calc(var(--w) + 7%)}75%{width:calc(var(--w) - 3%)}90%,100%{width:var(--w)}}\n  @media (prefers-reduced-motion: reduce){ .stage *{animation:none !important;} }";
+if(typeof document!=="undefined" && !document.getElementById("qqq-motion-kf")){
+  var __st=document.createElement("style"); __st.id="qqq-motion-kf"; __st.textContent=__QQQ_KF;
+  (document.head||document.documentElement).appendChild(__st);
 }
-</script>
-</body>
-</html>
+// ===== 공개 API =====
+function __qqqRender(n){ return byN[n]? byN[n].render() : ""; }
+function __qqqMount(n, el){
+  if(!el) return;
+  el.classList.add("stage");
+  el.innerHTML=__qqqRender(n);
+  var c=byN[n]; if(!c) return;
+  var reduce = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce){ try{ if(el.dataset) delete el.dataset.animed; animate(c, el); }catch(e){} }
+}
+if(typeof window!=="undefined") window.QQQ={ render:__qqqRender, mount:__qqqMount, byN:byN, applyMotion:animate };
+
+})();

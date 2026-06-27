@@ -115,12 +115,25 @@ Layer 1만 있고 Layer 2가 없으면 결과물이 "제목 + 텍스트 카드" 
 사용자가 **"23번으로 해줘", "62번 차트 써줘"처럼 번호로 지시**하면:
 
 - `references/component-registry.md` — **모든 컴포넌트(1~81)에 번호를 매긴 단일 기준표.** 번호 → `type`·이름·용도를 여기서 찾는다. (75~81 추가 템플릿의 코드는 `references/added-templates.md`.)
-- `component-gallery.html` — 스킬 폴더의 **번호별 시각 카탈로그**(브라우저로 열면 1~74가 실제로 그려져 있음 — 75~81은 아직 갤러리 미수록, `added-templates.md` 참고). 사용자가 눈으로 보고 번호를 고르는 화면이며, 각 번호 카드 안에 **그대로 가져다 쓸 SVG/HTML 예시**가 들어 있다.
+- `component-gallery.html` — 스킬 폴더의 **번호별 시각 카탈로그**(브라우저로 열면 1~74가 실제로 그려져 있음 — 75~81은 아직 갤러리 미수록, `added-templates.md` 참고). 사용자가 눈으로 보고 번호를 고르는 화면이며, 각 번호 카드 안에 **그대로 가져다 쓸 SVG/HTML 예시**가 들어 있다. **각 컴포넌트는 갤러리에서 짧은 루프 영상처럼 움직인다**(톱니 회전·선 위 흐르는 점·저울 흔들림·막대 자람·파이 순차 등). 이 움직임을 실제 슬라이드에도 1:1로 넣는 법은 아래 **"번호 컴포넌트는 '움직이는' 채로 만든다"** 항목과 `references/component-motion.md` 참고.
 - `요청시` 표시 컴포넌트(파이 60·도넛 61·레이더 62·버블 64·복합 69)는 발표 가독성 때문에 기본 추천에선 빠진다. 번호로 직접 고르면 **더 잘 읽히는 대안을 한 번 안내한 뒤** 사용자가 그대로 원하면 그 번호로 만든다.
+
+## 번호 컴포넌트는 '움직이는' 채로 만든다 — 모션 키트 필수
+
+갤러리에서 보이는 그 움직임(27 톱니 회전·39 저울 흔들림·29·35 선 위 흐르는 점·56 손그림 선·60 파이 순차·63 점 찍힘 등)을 **실제 생성 슬라이드에도 1:1로 넣는다.** 정적 SVG를 그대로 복붙해 멈춰 있게 두지 말 것.
+
+- 덱에 `references/qqq-component-kit.js`를 **클래식 `<script>`로, React/Babel 앞에** 통째로 인라인한다 → `window.QQQ` 노출(키프레임도 자동 주입, 별도 CSS 불필요).
+- 시각 컴포넌트(Layer 2)는 빈 `<div ref>`에 `useEffect(()=>window.QQQ.mount(n, ref.current),[n])`로 그린다. 래퍼 `GalleryComponent({n})`을 한 번 정의해 재사용한다(코드는 `component-motion.md`).
+- **FM 등장은 컴포넌트를 감싼 바깥 `MotionItem`에, 키트 모션은 안쪽 SVG 노드에** — 서로 다른 노드라 2번 규칙(같은 요소에 CSS+FM 동시 금지)과 충돌하지 않는다. (`<MotionItem enter><GalleryComponent n={27}/></MotionItem>`)
+- Babel은 **classic JSX 런타임**으로 컴파일해야 한다(automatic 런타임은 `import`를 내보내 깨진다 — `component-motion.md` 주의 참고).
+- `prefers-reduced-motion`이면 키트가 자동 정지. 컴포넌트 안 라벨 글씨는 등장 후 멈추므로 9번 규칙(읽는 글씨 지속 모션 금지)과도 맞는다.
+- 갤러리(모양·모션)를 고치면 **반드시 `node references/build-kit.js`**로 키트를 재생성한다(키트는 파생물, 단일 진실원천은 갤러리).
+- 전체 절차·React 글루·번호별 모션표·함정은 **`references/component-motion.md`를 반드시 읽는다.**
 
 ## 세부 규칙은 references/에서
 
 - `references/component-registry.md` — **번호(1~81) ↔ 컴포넌트 기준표.** "n번으로 해줘"를 해석할 때 본다. 시각 카탈로그는 `component-gallery.html`(1~74), 75~81 코드는 `added-templates.md`.
+- `references/component-motion.md` — **번호 컴포넌트를 갤러리처럼 '움직이게' 만드는 모션 키트(`qqq-component-kit.js`) 사용법.** `QQQ.mount(n, el)` · React 글루(`GalleryComponent`) · Framer Motion 공존 · reduced-motion · 번호별 시그니처 모션표 · `build-kit.js` 재생성. **시각 컴포넌트를 슬라이드에 넣을 때 반드시 본다.**
 - `references/structure-catalog.md` — **내용 모양 → 실제 구현된 구조 14개 매핑(STEP 0).** 카드로 뭉개지 않도록 구조를 끄집어낼 때 먼저 본다.
 - `references/trinity-template.md` — **`trinity`(삼위일체 삼각형) 전용 스펙.** 데이터 스키마 + 좌표 + 전체 컴포넌트 코드(복붙용) + 등장 순서.
 - `references/added-templates.md` — **검증된 추가 템플릿 7종**(`reproduce`·`platforms`·`reasons`·`keymsg`·`versus`·`bridge`·`tradeoff`) 데이터 스키마 + 컴포넌트 코드(복붙용) + 빌드 인덱스.
