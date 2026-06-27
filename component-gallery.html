@@ -519,21 +519,16 @@ const SHOW={
   // 21 선형 흐름: 왼→오 순차
   21:s=>cascade(s,"aSlideL",{gap:0.16}),
   // 26 순환 루프: 마디 순차 + 원 둘레를 도는 점
-  26:s=>{ pop(s,"circle",{base:0.3,gap:0.22});
-      flowDot(s,"M85 29 a56 56 0 1 1 -0.1 0",BL,{dur:3.4,delay:0,r:4}); },
+  26:s=>{ pop(s,"circle",{base:0.3,gap:0.22}); },
   // 27 톱니바퀴: 맞물려 회전
-  27:s=>{ const gs=[...s.querySelectorAll("g")].filter(g=>g.getAttribute("filter"));
-      const cf=[{t:12,d:"normal"},{t:13.5,d:"reverse"},{t:7,d:"normal"}];
-      gs.forEach((g,i)=>{const c=cf[i]||cf[0]; A(g,"aSpin",{dur:c.t,ease:"linear",box:"fill-box",origin:"center",dir:c.d});}); },
+  27:s=>{},
   // 28 블록 순환: 봄→여름→가을→겨울 차례로 피었다 완전히 사라진 뒤 봄이 다시 (겹침 없음)
   28:s=>bloomWedges(s),
   // 29 개념망 / 30 관계도: 선 그려지고 그 위로 점이 흐름
   29:s=>{ drawStrokes(s,{gap:0.12,dur:5}); pop(s,"circle",{base:0.7,gap:0.16}); lineDots(s,[BL,EM,AM,RO]); },
   30:s=>{ drawStrokes(s,{gap:0.14,dur:5}); pop(s,"circle",{base:0.7,gap:0.18}); lineDots(s,[RO,EM,BL]); },
   // 35 방사형: 중심에서 가지가 뻗고 점이 바깥으로
-  35:s=>{ drawStrokes(s,{gap:0.12,dur:5,base:0.2}); pop(s,"circle",{base:0.7,gap:0.16});
-      [...s.querySelectorAll("path")].forEach((p,i)=>{const m=(p.getAttribute("d")||"").match(/M([\d.]+) ([\d.]+) L([\d.]+) ([\d.]+)/);
-        if(m) flowDot(s,`M${m[1]} ${m[2]} L${m[3]} ${m[4]}`,EM,{dur:1.8,delay:1+i*0.2,r:3});}); },
+  35:s=>{ drawStrokes(s,{gap:0.12,dur:5,base:0.2}); pop(s,"circle",{base:0.7,gap:0.16}); },
   // 33 삼위일체: 가지선은 항상 보이게(정적) 두고 노드만 등장 — 윗선이 지워지는 구간이 없게
   33:s=>pop(s,"circle",{base:0.4,gap:0.16,dur:5}),
   // 38 벤다이어그램: 애니메이션 없이 정지
@@ -545,23 +540,14 @@ const SHOW={
       const mk=document.createElement("div");
       mk.style.cssText=`position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid ${INK};box-shadow:0 3px 9px rgba(15,23,42,.3);transform:translateX(-50%);left:6%`;
       mk.style.top=(bar.offsetTop+bar.offsetHeight/2-10)+"px"; mk.style.setProperty("--settle","87%"); o.appendChild(mk);
-      A(mk,"aSweepSettle",{dur:5,ease:EZL}); },
-  // 39 양팔 저울: 수평에서 시작 → 오른쪽(평등)이 무거워 내려감. 보는 회전, 추는 수평 유지하며 상하 이동
-  39:s=>{ const kt="0;0.16;0.30;0.44;0.74;1", ks=".3 0 .3 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.5 0 .4 1", dur="4.4s";
-    const mk=(el,type,vals)=>{ if(!el)return; const a=document.createElementNS(SVGNS,"animateTransform");
-      a.setAttribute("attributeName","transform"); a.setAttribute("type",type); a.setAttribute("values",vals);
-      a.setAttribute("keyTimes",kt); a.setAttribute("calcMode","spline"); a.setAttribute("keySplines",ks);
-      a.setAttribute("dur",dur); a.setAttribute("repeatCount","indefinite"); el.insertBefore(a,el.firstChild); };
-    mk(s.querySelector(".js-beam"),"rotate","0 100 38;11 100 38;6 100 38;9 100 38;8 100 38;0 100 38");
-    mk(s.querySelector(".js-panR"),"translate","0 0;0 10.7;0 5.9;0 8.8;0 7.8;0 0");
-    mk(s.querySelector(".js-panL"),"translate","0 0;0 -10.7;0 -5.9;0 -8.8;0 -7.8;0 0"); },
-  // 45 잠깐 생각: 이모지 갸우뚱 + 머리 위로 물음표가 솟아오름
+      enterA(mk,"aSweepSettle",{dur:5,ease:EZL}); },
+  // 39 양팔 저울: SMIL 시소 → LIFE로 이전
+  39:s=>{},
+  // 45 잠깐 생각: 물음표 1회 등장(enterA), 이모지 갸우뚱은 LIFE로
   45:s=>{ const d=s.firstElementChild; d.style.position="relative"; d.style.paddingTop="18px";
-      const emo=d.firstElementChild; emo.style.display="inline-block"; emo.style.transformOrigin="50% 85%";
-      A(emo,"aWobble",{dur:1.5,ease:"ease-in-out"});
       const q=document.createElement("div"); q.textContent="?";
       q.style.cssText=`position:absolute;left:50%;top:-8px;font-size:30px;font-weight:900;color:${BL};text-shadow:0 2px 6px ${BL}55`;
-      d.insertBefore(q,d.firstChild); A(q,"aQMark",{dur:3.2,ease:EZ}); },
+      d.insertBefore(q,d.firstChild); enterA(q,"aQMark",{dur:3.2,ease:EZ}); },
   // 46 OX 퀴즈: 두 선택지 등장 후 정답(O)에 동그라미가 그려짐
   46:s=>{ const box=s.firstElementChild; box.style.position="relative";
       const q=box.firstElementChild; if(q) q.style.marginBottom="24px";   // 글자와 OX 사이 간격 넓힘
@@ -612,7 +598,26 @@ const SHOW={
 // 등장(1회): 기존 SHOW/generic/chart 가 정착 키프레임으로 1회 재생
 function enter(c,stage){ (SHOW[c.n] || (()=>generic(c,stage)))(stage); }
 // 생명(영구): 컴포넌트별 LIFE 효과 적용
-const LIFE = {};
+const LIFE = {
+  26:s=>{ flowDot(s,"M85 29 a56 56 0 1 1 -0.1 0",BL,{dur:3.4,delay:0,r:4}); },
+  27:s=>{ const gs=[...s.querySelectorAll("g")].filter(g=>g.getAttribute("filter"));
+    const cf=[{t:12,d:"normal"},{t:13.5,d:"reverse"},{t:7,d:"normal"}];
+    gs.forEach((g,i)=>{const c=cf[i]||cf[0]; A(g,"aSpin",{dur:c.t,ease:"linear",box:"fill-box",origin:"center",dir:c.d,rep:"infinite"});}); },
+  35:s=>{ [...s.querySelectorAll("path")].forEach((p,i)=>{const m=(p.getAttribute("d")||"").match(/M([\d.]+) ([\d.]+) L([\d.]+) ([\d.]+)/);
+    if(m) flowDot(s,`M${m[1]} ${m[2]} L${m[3]} ${m[4]}`,EM,{dur:1.8,delay:1+i*0.2,r:3});}); },
+  37:s=>{},
+  39:s=>{ const kt="0;0.16;0.30;0.44;0.74;1", ks=".3 0 .3 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.5 0 .4 1", dur="4.4s";
+    const mk=(el,type,vals)=>{ if(!el)return; const a=document.createElementNS(SVGNS,"animateTransform");
+      a.setAttribute("attributeName","transform"); a.setAttribute("type",type); a.setAttribute("values",vals);
+      a.setAttribute("keyTimes",kt); a.setAttribute("calcMode","spline"); a.setAttribute("keySplines",ks);
+      a.setAttribute("dur",dur); a.setAttribute("repeatCount","indefinite"); el.insertBefore(a,el.firstChild); };
+    mk(s.querySelector(".js-beam"),"rotate","0 100 38;11 100 38;6 100 38;9 100 38;8 100 38;0 100 38");
+    mk(s.querySelector(".js-panR"),"translate","0 0;0 10.7;0 5.9;0 8.8;0 7.8;0 0");
+    mk(s.querySelector(".js-panL"),"translate","0 0;0 -10.7;0 -5.9;0 -8.8;0 -7.8;0 0"); },
+  45:s=>{ const emo=s.firstElementChild&&s.firstElementChild.querySelector("*");
+    const e=[...s.querySelectorAll("*")].find(x=>x.textContent&&/\p{Emoji}/u.test(x.textContent));
+    if(e){ e.style.display="inline-block"; e.style.transformOrigin="50% 85%"; A(e,"aWobble",{dur:1.5,ease:"ease-in-out",rep:"infinite"}); } },
+};
 function live(c,stage){ const f=LIFE[c.n]; if(f){ try{ f(stage); }catch(e){} } }
 
 // ===== 카테고리 기본 모션 =====

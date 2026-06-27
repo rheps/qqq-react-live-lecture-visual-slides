@@ -48,6 +48,8 @@ ok("LIFE 레지스트리 정의", /const LIFE\s*=/.test(html));
 ok("live 함수 정의", /function live\s*\(/.test(html));
 ok("animate가 enter+live 호출", /enter\(c,\s*stage\)[\s\S]*live\(c,\s*stage\)/.test(html));
 
+for (const n of [26,27,35,37,39,45]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(html.split("const LIFE")[1]||""));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
