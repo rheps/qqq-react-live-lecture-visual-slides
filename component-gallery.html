@@ -609,6 +609,12 @@ const SHOW={
       if(data) A(data,"aGrowC",{dur:5,box:"view-box",origin:"85px 85px"}); },
 };
 
+// 등장(1회): 기존 SHOW/generic/chart 가 정착 키프레임으로 1회 재생
+function enter(c,stage){ (SHOW[c.n] || (()=>generic(c,stage)))(stage); }
+// 생명(영구): 컴포넌트별 LIFE 효과 적용
+const LIFE = {};
+function live(c,stage){ const f=LIFE[c.n]; if(f){ try{ f(stage); }catch(e){} } }
+
 // ===== 카테고리 기본 모션 =====
 function generic(c,s){
   const n=c.n, cat=c.cat, svg=!!s.querySelector("svg");
@@ -642,7 +648,9 @@ function chart(c,s){
 // 한 무대에 모션 적용
 function animate(c,stage){
   if(!stage || stage.dataset.animed) return; stage.dataset.animed="1";
-  try{ (SHOW[c.n] || (cc=>generic(c,stage)))(stage); }catch(e){}
+  try{ enter(c,stage); }catch(e){}
+  var reduce = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce) live(c,stage);
 }
 
 // ===== 렌더링 =====

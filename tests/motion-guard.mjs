@@ -44,6 +44,10 @@ for (const kf of ["aCycleHi","aAlt","aChev","aBreath","aRipple","aSpk","aSheen",
   ok(`생명 키프레임 ${kf} 정의`, new RegExp(`@keyframes\\s+${kf}\\b`).test(html));
 }
 
+ok("LIFE 레지스트리 정의", /const LIFE\s*=/.test(html));
+ok("live 함수 정의", /function live\s*\(/.test(html));
+ok("animate가 enter+live 호출", /enter\(c,\s*stage\)[\s\S]*live\(c,\s*stage\)/.test(html));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
