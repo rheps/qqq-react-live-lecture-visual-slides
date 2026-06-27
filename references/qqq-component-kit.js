@@ -266,7 +266,7 @@ const SHOW={
       flowDot(s,"M85 29 a56 56 0 1 1 -0.1 0",BL,{dur:3.4,delay:0,r:4}); },
   // 27 톱니바퀴: 맞물려 회전
   27:s=>{ const gs=[...s.querySelectorAll("g")].filter(g=>g.getAttribute("filter"));
-      const cf=[{t:6,d:"normal"},{t:6.8,d:"reverse"},{t:3.6,d:"normal"}];
+      const cf=[{t:12,d:"normal"},{t:13.5,d:"reverse"},{t:7,d:"normal"}];
       gs.forEach((g,i)=>{const c=cf[i]||cf[0]; A(g,"aSpin",{dur:c.t,ease:"linear",box:"fill-box",origin:"center",dir:c.d});}); },
   // 28 블록 순환: 봄→여름→가을→겨울 차례로 피었다 완전히 사라진 뒤 봄이 다시 (겹침 없음)
   28:s=>bloomWedges(s),
@@ -287,7 +287,7 @@ const SHOW={
   37:s=>{ const o=s.firstElementChild; o.style.position="relative"; const bar=o.firstElementChild;
       const mk=document.createElement("div");
       mk.style.cssText=`position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid ${INK};box-shadow:0 3px 9px rgba(15,23,42,.3);transform:translateX(-50%);left:6%`;
-      mk.style.top=(bar.offsetTop+bar.offsetHeight/2-10)+"px"; o.appendChild(mk);
+      mk.style.top=(bar.offsetTop+bar.offsetHeight/2-10)+"px"; mk.style.setProperty("--settle","87%"); o.appendChild(mk);
       A(mk,"aSweepSettle",{dur:5,ease:EZL}); },
   // 39 양팔 저울: 수평에서 시작 → 오른쪽(평등)이 무거워 내려감. 보는 회전, 추는 수평 유지하며 상하 이동
   39:s=>{ const kt="0;0.16;0.30;0.44;0.74;1", ks=".3 0 .3 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.5 0 .4 1", dur="4.4s";
