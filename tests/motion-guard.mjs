@@ -50,6 +50,13 @@ ok("animate가 enter+live 호출", /enter\(c,\s*stage\)[\s\S]*live\(c,\s*stage\)
 
 for (const n of [26,27,35,37,39,45]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(html.split("const LIFE")[1]||""));
 
+// 재설계 대상은 더 이상 사라짐 모션을 호출하면 안 된다
+const showBlock = html.slice(html.indexOf("const SHOW="), html.indexOf("function generic"));
+for (const n of [28,60,61]) ok(`SHOW[${n}] bloomWedges 미사용`, !new RegExp(`${n}:s=>bloomWedges`).test(showBlock));
+ok("SHOW[58] aPush 미사용", !/aPush/.test(showBlock));
+ok("SHOW[62] aGrowC 미사용(1회는 aGrowCIn만)", !/"aGrowC"/.test(showBlock));
+for (const n of [28,58,60,61,62]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(html.split("const LIFE")[1]||""));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
