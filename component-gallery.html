@@ -124,6 +124,18 @@
   @keyframes aGrowC{0%{transform:scale(0);opacity:.35}24%{transform:scale(1);opacity:1}86%{transform:scale(1);opacity:1}100%{transform:scale(0);opacity:.35}}
   /* 100% 스택: 두 영역이 서로 밀어내며 넓어졌다 줄었다 정착 */
   @keyframes aPush{0%{width:var(--w)}15%{width:calc(var(--w) + 16%)}35%{width:calc(var(--w) - 12%)}55%{width:calc(var(--w) + 7%)}75%{width:calc(var(--w) - 3%)}90%,100%{width:var(--w)}}
+  /* ── 1회성 등장(정착에서 끝남, 사라지지 않음) ── */
+  @keyframes aRiseTIn{0%{opacity:0;transform:translateY(-15px)}100%{opacity:1;transform:none}}
+  @keyframes aRiseBIn{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}
+  @keyframes aSlideLIn{0%{opacity:0;transform:translateX(-22px)}100%{opacity:1;transform:none}}
+  @keyframes aSlideRIn{0%{opacity:0;transform:translateX(22px)}100%{opacity:1;transform:none}}
+  @keyframes aPopIn{0%{opacity:0;transform:scale(.55)}60%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:scale(1)}}
+  @keyframes aFadeIn{0%{opacity:0}100%{opacity:1}}
+  @keyframes aGrowYIn{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+  @keyframes aGrowXIn{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+  @keyframes aDrawIn{0%{stroke-dashoffset:var(--len)}100%{stroke-dashoffset:0}}
+  @keyframes aWipeXIn{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
+  @keyframes aGrowCIn{0%{transform:scale(0);opacity:.35}100%{transform:scale(1);opacity:1}}
   @media (prefers-reduced-motion: reduce){ .stage *{animation:none !important;} }
 </style>
 </head>
@@ -332,10 +344,12 @@ function A(el,name,o={}){
   el.style.animationTimingFunction=ease;
   if(dir) el.style.animationDirection=dir;
 }
+// 등장 전용: 1회 재생 후 정착 유지(절대 사라지지 않음)
+function enterA(el,name,o={}){ A(el,name,Object.assign({rep:1,fill:"forwards"},o)); }
 // 자식들을 순차 등장
 function cascade(stage,name,o={}){
   const {gap=0.16,dur=5,base=0.1,origin,box,ease}=o;
-  kids(stage).forEach((el,i)=>A(el,name,{dur,delay:base+i*gap,origin,box,ease}));
+  kids(stage).forEach((el,i)=>enterA(el,name+"In",{dur,delay:base+i*gap,origin,box,ease}));
 }
 // 선(획)을 손으로 그리듯 — line/polyline/path(fill:none)
 function drawStrokes(stage,o={}){
@@ -348,13 +362,13 @@ function drawStrokes(stage,o={}){
     let L; try{L=p.getTotalLength();}catch(e){return;}
     if(!L||!isFinite(L)) return;
     p.style.setProperty("--len",L); p.style.strokeDasharray=L; p.style.strokeDashoffset=L;
-    A(p,"aDraw",{dur,delay:base+i*gap,ease:EZL});
+    enterA(p,"aDrawIn",{dur,delay:base+i*gap,ease:EZL});
   });
 }
 // 점/마디 톡톡 등장
 function pop(stage,sel,o={}){
   const {gap=0.14,dur=5,base=0.2}=o;
-  [...stage.querySelectorAll(sel)].forEach((el,i)=>A(el,"aPop",{dur,delay:base+i*gap,box:"fill-box",origin:"center"}));
+  [...stage.querySelectorAll(sel)].forEach((el,i)=>enterA(el,"aPopIn",{dur,delay:base+i*gap,box:"fill-box",origin:"center"}));
 }
 // 선 위를 흐르는 점
 function flowDot(stage,d,color,o={}){
@@ -518,10 +532,10 @@ function generic(c,s){
 function chart(c,s){
   const n=c.n, horiz=(n===54);
   const rects=[...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("rx")||0)<=9 && +(r.getAttribute("height")||0)>0);
-  rects.forEach((r,i)=>A(r,horiz?"aGrowX":"aGrowY",{dur:5,delay:0.15+i*0.1,box:"fill-box",origin:horiz?"left":"bottom"}));
+  rects.forEach((r,i)=>enterA(r,horiz?"aGrowXIn":"aGrowYIn",{dur:5,delay:0.15+i*0.1,box:"fill-box",origin:horiz?"left":"bottom"}));
   drawStrokes(s,{gap:0.2,dur:5,base:0.2});
   [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";})
-    .forEach((p,i)=>A(p,"aFade",{dur:5,delay:0.2+i*0.14}));
+    .forEach((p,i)=>enterA(p,"aFadeIn",{dur:5,delay:0.2+i*0.14}));
   pop(s,"circle",{base:0.6,gap:0.1});
   if(!rects.length && !s.querySelector("path,polyline,line,circle")) cascade(s,"aPop",{gap:0.12});
 }
