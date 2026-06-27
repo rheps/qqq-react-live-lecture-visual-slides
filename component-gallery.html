@@ -503,6 +503,10 @@ function wobbleLife(stage, sel, o={}){
   const {dur=1.8}=o; const t=stage.querySelector(sel); if(!t) return;
   t.style.transformOrigin="50% 80%"; A(t,"aWobbleLife",{dur,rep:"infinite",ease:"ease-in-out"});
 }
+// polyline → path d 변환
+function polyToPath(p){ const pts=(p.getAttribute("points")||"").trim(); return pts? "M"+pts.replace(/\s+/g," ").replace(/,/g," ") : (p.getAttribute("d")||""); }
+// line 또는 polyline → path d 변환
+function lineToPath(ln){ if(ln.tagName.toLowerCase()==="line"){ return `M${ln.getAttribute("x1")} ${ln.getAttribute("y1")} L${ln.getAttribute("x2")} ${ln.getAttribute("y2")}`; } return polyToPath(ln); }
 
 // ===== 컴포넌트별 맞춤 모션 =====
 const SHOW={
@@ -609,7 +613,7 @@ const LIFE = {
   45:s=>{ const emo=s.firstElementChild&&s.firstElementChild.querySelector("*");
     const e=[...s.querySelectorAll("*")].find(x=>x.textContent&&/\p{Emoji}/u.test(x.textContent));
     if(e){ e.style.display="inline-block"; e.style.transformOrigin="50% 85%"; A(e,"aWobble",{dur:1.5,ease:"ease-in-out",rep:"infinite"}); } },
-  // 재설계: 강조 순회 / 광택 / 반짝임
+  // 재설계: 강조 순환 / 광택 / 반짝임
   28:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
   58:s=>sheen(s, kids(s).map(r=>r.lastElementChild).filter(Boolean)),
   60:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
@@ -617,6 +621,73 @@ const LIFE = {
   62:s=>{ const ps=[...s.querySelectorAll("polygon")]; const data=ps[ps.length-1];
         const pts=(data?.getAttribute("points")||"").trim().split(/\s+/).map(pr=>pr.split(",").map(Number));
         sparkle(s, pts, {color:BL,size:13}); },
+  // 텍스트류 (A)
+  1:s=>breatheGlow(s, ".kw, h1, .big, :scope *", {color:AM}),
+  2:s=>breatheGlow(s, ":scope *", {color:BL}),
+  3:s=>sheen(s, [s.firstElementChild].filter(Boolean)),
+  5:s=>pulseLife(s, ".quote-mark, :scope *"),
+  6:s=>sheen(s, [s.querySelector(".divider, hr, .ln")||s.firstElementChild].filter(Boolean)),
+  7:s=>wobbleLife(s, ".qmark, :scope *"),
+  // 카드·목록 (B)
+  8:s=>cycleHighlight(s, kids(s)),
+  9:s=>cycleHighlight(s, kids(s)),
+  10:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+8])),
+  11:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+8])),
+  12:s=>dirPulse(s, ".num, .badge, :scope > *"),
+  13:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+14,e.offsetTop+e.offsetHeight/2])),
+  48:s=>sheen(s, kids(s)),
+  51:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+14,e.offsetTop+e.offsetHeight/2])),
+  // 비교 (C)
+  14:s=>altEmphasis(s, kids(s)),
+  15:s=>dirPulse(s, "path, .arrow, :scope > *"),
+  16:s=>altEmphasis(s, kids(s)),
+  17:s=>{ altEmphasis(s, kids(s).filter(e=>!/vs/i.test(e.textContent))); pulseLife(s, ".vs, .badge"); },
+  18:s=>cycleHighlight(s, kids(s)),
+  // 흐름 (D)
+  19:s=>dirPulse(s, "path, polyline, .arrow, :scope > *"),
+  20:s=>lineDots(s,[BL,EM,AM,RO]),
+  21:s=>dirPulse(s, ":scope > *"),
+  22:s=>dirPulse(s, "path, polyline, .arrow"),
+  23:s=>dirPulse(s, "path, polyline, .arrow, :scope > *"),
+  24:s=>dirPulse(s, ".chev, path, :scope > *"),
+  25:s=>cycleHighlight(s, kids(s)),
+  // 관계·구조 (F)
+  29:s=>lineDots(s,[BL,EM,AM,RO]),
+  30:s=>lineDots(s,[RO,EM,BL]),
+  31:s=>cycleHighlight(s, kids(s)),
+  32:s=>cycleHighlight(s, kids(s)),
+  33:s=>lineDots(s,[BL,EM,RO]),
+  34:s=>lineDots(s,[BL,EM,AM]),
+  36:s=>dirPulse(s, ":scope > *"),
+  40:s=>ripple(s, 85, 75, {color:AM}),
+  // 타임라인 (G)
+  41:s=>axisMarker(s,{color:RO}),
+  42:s=>cycleHighlight(s, kids(s)),
+  43:s=>breatheGlow(s, ".moment, :scope *", {color:BL}),
+  // 수업 (H)
+  44:s=>floatBob(s, ".bubble, :scope *"),
+  46:s=>{ const ok=s.querySelector("span"); if(ok) sparkle(s,[[ok.offsetLeft+ok.offsetWidth/2, ok.offsetTop+ok.offsetHeight/2]],{color:EM}); },
+  47:s=>sparkle(s, [...s.querySelectorAll(".check, span")].slice(0,1).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+e.offsetHeight/2])),
+  // 마무리 (I)
+  49:s=>lineDots(s,[EM,AM,SK,RO]),
+  50:s=>breatheGlow(s, ":scope *", {color:AM}),
+  // 차트 (J, K)
+  52:s=>sparkle(s, [[ (s.firstElementChild?.offsetWidth||120)/2, (s.firstElementChild?.offsetHeight||60)/2 ]], {color:AM}),
+  53:s=>sheen(s, [...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)),
+  54:s=>sheen(s, kids(s).map(it=>it.lastElementChild&&it.lastElementChild.firstElementChild).filter(Boolean)),
+  55:s=>sheen(s, [...s.querySelectorAll("line")]),
+  56:s=>{ const p=s.querySelector("polyline,path[fill='none']"); if(p) flowDot(s,p.getAttribute("d")||polyToPath(p),BL,{dur:2.6}); },
+  57:s=>[...s.querySelectorAll("line,polyline")].forEach((p,i)=>flowDot(s, lineToPath(p), col(i), {dur:2.4,delay:i*0.3})),
+  59:s=>sheen(s, [s.querySelector("polygon")].filter(Boolean)),
+  63:s=>sparkle(s, "circle"),
+  64:s=>sparkle(s, "circle"),
+  65:s=>dirPulse(s, "rect"),
+  66:s=>dirPulse(s, "path, polygon, :scope > *"),
+  67:s=>sheen(s, [...s.querySelectorAll("rect")]),
+  68:s=>dirPulse(s, "rect"),
+  69:s=>{ sheen(s,[...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)); const p=s.querySelector("polyline,path[fill='none']"); if(p) flowDot(s,p.getAttribute("d")||polyToPath(p),RO,{dur:2.6}); },
+  // 로고 (L)
+  82:s=>sheen(s, kids(s)),
 };
 function live(c,stage){ const f=LIFE[c.n]; if(f){ try{ f(stage); }catch(e){} } }
 

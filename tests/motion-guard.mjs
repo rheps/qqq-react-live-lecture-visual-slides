@@ -57,6 +57,12 @@ ok("SHOW[58] aPush 미사용", !/aPush/.test(showBlock));
 ok("SHOW[62] aGrowC 미사용(1회는 aGrowCIn만)", !/"aGrowC"/.test(showBlock));
 for (const n of [28,58,60,61,62]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(html.split("const LIFE")[1]||""));
 
+// Task 6: 0(정지) 7종은 LIFE 엔트리가 없어야 한다
+const lifeBlock = html.split("const LIFE")[1] || "";
+for (const n of [4,38,70,71,72,73,74]) ok(`LIFE[${n}] 없음(정지)`, !new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
+// Task 6: 효과 있는 대표 번호 존재 확인
+for (const n of [1,2,3,5,6,7,8,12,14,17,19,20,29,31,40,41,43,44,46,53,56,63,65,82]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
