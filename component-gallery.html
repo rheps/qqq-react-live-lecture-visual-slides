@@ -512,8 +512,8 @@ function lineToPath(ln){ if(ln.tagName.toLowerCase()==="line"){ return `M${ln.ge
 const SHOW={
   // 20 세로 단계: 위→아래 하나씩, 연결선은 차례로 그려지듯
   20:s=>{ kids(s).forEach((el,i)=>{
-      if(el.offsetWidth<=8) A(el,"aGrowY",{dur:5,delay:0.1+i*0.18,box:"fill-box",origin:"top"});
-      else A(el,"aRiseT",{dur:5,delay:0.1+i*0.18}); }); },
+      if(el.offsetWidth<=8) enterA(el,"aGrowYIn",{dur:5,delay:0.1+i*0.18,box:"fill-box",origin:"top"});
+      else enterA(el,"aRiseTIn",{dur:5,delay:0.1+i*0.18}); }); },
   // 21 선형 흐름: 왼→오 순차
   21:s=>cascade(s,"aSlideL",{gap:0.16}),
   // 26 순환 루프: 마디 순차 + 원 둘레를 도는 점
@@ -534,7 +534,7 @@ const SHOW={
   38:s=>{},
   // 40 동심원: 애니메이션 없이 정지
   40:s=>{},
-  // 37 스펙트럼: 마커가 좌우로 왔다갔다 하다 중앙(중도)에 정착
+  // 37 스펙트럼: 마커가 좌우로 왔다갔다 하다 오른쪽(긍정)에 정착
   37:s=>{ const o=s.firstElementChild; o.style.position="relative"; const bar=o.firstElementChild;
       const mk=document.createElement("div");
       mk.style.cssText=`position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid ${INK};box-shadow:0 3px 9px rgba(15,23,42,.3);transform:translateX(-50%);left:6%`;
@@ -564,14 +564,14 @@ const SHOW={
       p.setAttribute("stroke-width","2.6"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       svg.appendChild(p); box.appendChild(svg);
       let L; try{L=p.getTotalLength();}catch(_){L=320;} p.style.setProperty("--len",L);
-      p.style.strokeDasharray=L; p.style.strokeDashoffset=L; A(p,"aDraw",{dur:5,delay:0.7,ease:EZL}); },
+      p.style.strokeDasharray=L; p.style.strokeDashoffset=L; enterA(p,"aDrawIn",{dur:5,delay:0.7,ease:EZL}); },
   // 49 요약 지도: 중심에서 방사형으로 가지가 뻗고 카드가 펼쳐짐
   49:s=>{ drawStrokes(s,{gap:0.12,dur:5,base:0.2}); pop(s,"rect,circle",{base:0.7,gap:0.15}); lineDots(s,[EM,AM,SK,RO]); },
   // 52 큰 수치: 크게 톡 등장 후 맥박
   52:s=>{ cascade(s,"aPop",{gap:0.12}); },
   // 54 가로 막대(HTML): 왼→오로 자람
   54:s=>{ kids(s).forEach((item,i)=>{ const vr=item.lastElementChild, bar=vr&&vr.firstElementChild;
-      if(bar) A(bar,"aGrowX",{dur:5,delay:0.15+i*0.16,origin:"left center"}); }); },
+      if(bar) enterA(bar,"aGrowXIn",{dur:5,delay:0.15+i*0.16,origin:"left center"}); }); },
   // 55 롤리팝: 막대가 왼→오로 그려지고 끝의 원이 톡
   55:s=>{ drawStrokes(s,{gap:0.2,dur:5}); pop(s,"circle",{base:0.6,gap:0.2}); },
   // 58 100% 스택: 막대·세그먼트는 등장 즉시 정착(별도 모션 없음)
@@ -579,7 +579,7 @@ const SHOW={
   // 63 산점도: 점을 하나씩 손으로 찍고 추세선을 그림
   63:s=>pop(s,"circle",{base:0.3,gap:0.22,dur:5}),
   // 59 영역 차트: 선을 그리는 동안 면(area)도 왼→오로 같이 차오름
-  59:s=>{ drawStrokes(s,{dur:5}); const a=s.querySelector("polygon"); if(a) A(a,"aWipeX",{dur:5,ease:EZL}); },
+  59:s=>{ drawStrokes(s,{dur:5}); const a=s.querySelector("polygon"); if(a) enterA(a,"aWipeXIn",{dur:5,ease:EZL}); },
   // 60 파이: 조각 팝인 정착(사라짐 없음)
   60:s=>{ [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";})
         .forEach((p,i)=>enterA(p,"aPopIn",{dur:.6,delay:0.1+i*0.12,box:"fill-box",origin:"center"})); },
@@ -610,8 +610,7 @@ const LIFE = {
     mk(s.querySelector(".js-beam"),"rotate","0 100 38;11 100 38;6 100 38;9 100 38;8 100 38;0 100 38");
     mk(s.querySelector(".js-panR"),"translate","0 0;0 10.7;0 5.9;0 8.8;0 7.8;0 0");
     mk(s.querySelector(".js-panL"),"translate","0 0;0 -10.7;0 -5.9;0 -8.8;0 -7.8;0 0"); },
-  45:s=>{ const emo=s.firstElementChild&&s.firstElementChild.querySelector("*");
-    const e=[...s.querySelectorAll("*")].find(x=>x.textContent&&/\p{Emoji}/u.test(x.textContent));
+  45:s=>{ const e=[...s.querySelectorAll("*")].find(x=>x.textContent&&/\p{Emoji}/u.test(x.textContent));
     if(e){ e.style.display="inline-block"; e.style.transformOrigin="50% 85%"; A(e,"aWobble",{dur:1.5,ease:"ease-in-out",rep:"infinite"}); } },
   // 재설계: 강조 순환 / 광택 / 반짝임
   28:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),

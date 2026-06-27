@@ -70,6 +70,11 @@ ok("키트에 cycleHighlight 포함", /function cycleHighlight/.test(kit));
 ok("키트에 aRiseTIn 키프레임 포함", /aRiseTIn/.test(kit));
 ok("키트에 bloomWedges 미포함(재설계 반영)", !/function bloomWedges/.test(kit));
 
+// Task 7 review: SHOW 블록에 직접 A(var,"<루핑 등장 키프레임>") 잔존 없음 가드
+const showBlk = html.slice(html.indexOf("const SHOW="), html.indexOf("function generic"));
+const bareEntrance = /[^A-Za-z]A\(\s*[A-Za-z_$][\w$]*\s*,\s*"a(RiseT|RiseB|SlideL|SlideR|Pop|Fade|GrowY|GrowX|Draw|WipeX|GrowC|Bloom)"/;
+ok("SHOW 진입 모션에 직접 A(...) 무한 루프 잔존 없음(전부 enterA+*In)", !bareEntrance.test(showBlk));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
