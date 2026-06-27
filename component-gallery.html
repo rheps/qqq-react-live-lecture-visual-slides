@@ -136,6 +136,18 @@
   @keyframes aDrawIn{0%{stroke-dashoffset:var(--len)}100%{stroke-dashoffset:0}}
   @keyframes aWipeXIn{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
   @keyframes aGrowCIn{0%{transform:scale(0);opacity:.35}100%{transform:scale(1);opacity:1}}
+  /* ── 생명 레이어(영구·비파괴) ── */
+  @keyframes aCycleHi{0%{filter:brightness(1.18);transform:scale(1.05)}12%{filter:brightness(1.18);transform:scale(1.05)}26%,100%{filter:brightness(.82);transform:scale(1)}}
+  @keyframes aAlt{0%{filter:brightness(1.12);transform:scale(1.03)}40%{filter:brightness(1.12);transform:scale(1.03)}55%,100%{filter:brightness(.8);transform:scale(.985)}}
+  @keyframes aChev{0%,100%{opacity:.25}40%{opacity:1}}
+  @keyframes aBreath{0%,100%{transform:scale(.85);opacity:.4}50%{transform:scale(1.15);opacity:.75}}
+  @keyframes aRipple{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}
+  @keyframes aSpk{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(20deg)}}
+  @keyframes aSheen{0%{transform:translateX(-160%) skewX(-18deg)}55%,100%{transform:translateX(320%) skewX(-18deg)}}
+  @keyframes aPulseLife{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+  @keyframes aFloatLife{0%,100%{transform:translateY(-5px)}50%{transform:translateY(5px)}}
+  @keyframes aWobbleLife{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+  @keyframes aTravel{0%{left:6%;opacity:0}8%{opacity:1}80%{left:94%;opacity:1}90%{left:94%;opacity:0}100%{left:6%;opacity:0}}
   @media (prefers-reduced-motion: reduce){ .stage *{animation:none !important;} }
 </style>
 </head>
@@ -409,6 +421,93 @@ function smilRotate(el,vals,dur){
   a.setAttribute("keyTimes","0;0.25;0.5;0.75;1");
   a.setAttribute("keySplines",".4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1");
   el.insertBefore(a, el.firstChild);
+}
+
+// ===== 생명 레이어 헬퍼 (정착 후 영구·비파괴) =====
+function _items(stage, els){ return Array.isArray(els) ? els : [...stage.querySelectorAll(els)]; }
+
+// 1 강조 순회: 조각/카드/층을 하나씩 차례로 강조
+function cycleHighlight(stage, els, o={}){
+  const {step=0.9}=o; const list=_items(stage, els||":scope > *"); const n=list.length; if(!n) return;
+  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; el.style.transformOrigin="center";
+    A(el,"aCycleHi",{dur:n*step,delay:i*step,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 2 양쪽 번갈아: 두(또는 N) 영역 교대 강조
+function altEmphasis(stage, els, o={}){
+  const {dur=3.0}=o; const list=_items(stage, els); const n=list.length; if(!n) return;
+  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; el.style.transformOrigin="center";
+    A(el,"aAlt",{dur,delay:i*(dur/n),rep:"infinite",ease:"ease-in-out"}); });
+}
+// 4 축 따라 이동 마커: 가로 축을 따라 글로우 마커가 한 방향 이동
+function axisMarker(stage, o={}){
+  const {dur=4.5,color=RO,top}=o; const box=stage.firstElementChild||stage; box.style.position="relative";
+  const mk=document.createElement("div");
+  mk.style.cssText=`position:absolute;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,${color},#fff0 70%);box-shadow:0 0 14px ${color};transform:translate(-50%,-50%);left:6%;top:${top!=null?top+"px":"50%"};pointer-events:none`;
+  box.appendChild(mk); A(mk,"aTravel",{dur,rep:"infinite",ease:EZL});
+}
+// 5 방향 펄스: 화살표/마디가 순서대로 톡톡 빛남
+function dirPulse(stage, sel, o={}){
+  const {dur=1.4,gap=0.18}=o; const list=[...stage.querySelectorAll(sel)];
+  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; A(el,"aChev",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 6 글로우 호흡: 대상 뒤에 헤일로를 깔고 숨쉬게 함(글씨 정지)
+function breatheGlow(stage, sel, o={}){
+  const {color=AM,size=130}=o; const t=stage.querySelector(sel)||stage.firstElementChild; if(!t) return;
+  const host=t.parentElement||stage; if(getComputedStyle(host).position==="static") host.style.position="relative";
+  const halo=document.createElement("div");
+  halo.style.cssText=`position:absolute;left:50%;top:50%;width:${size}px;height:${size}px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,${color} 0%,transparent 70%);filter:blur(8px);z-index:0;pointer-events:none`;
+  host.insertBefore(halo, host.firstChild); A(halo,"aBreath",{dur:3.4,rep:"infinite",ease:"ease-in-out"});
+}
+// 7 맥박
+function pulseLife(stage, sel, o={}){
+  const {dur=1.6}=o; const t=stage.querySelector(sel)||stage.firstElementChild; if(!t) return;
+  t.style.transformBox="fill-box"; t.style.transformOrigin="center"; A(t,"aPulseLife",{dur,rep:"infinite",ease:"ease-in-out"});
+}
+// 8 파동 펄스: 중심(cx,cy)에서 SVG 링이 퍼짐
+function ripple(stage, cx, cy, o={}){
+  const {color=TL,dur=2.6,n=3,r0=14}=o; const svg=stage.querySelector("svg"); if(!svg) return;
+  for(let i=0;i<n;i++){ const c=document.createElementNS(SVGNS,"circle");
+    c.setAttribute("cx",cx); c.setAttribute("cy",cy); c.setAttribute("r",r0);
+    c.setAttribute("fill","none"); c.setAttribute("stroke",color); c.setAttribute("stroke-width","2.5");
+    c.style.transformBox="fill-box"; c.style.transformOrigin=`${cx}px ${cy}px`;
+    A(c,"aRipple",{dur,delay:i*(dur/n),rep:"infinite",ease:"ease-out"});
+    svg.insertBefore(c, svg.firstChild); }
+}
+// 9 반짝임: 좌표 목록 위에 ✦ 스파클을 깜빡임 (pts: [[x,y],...] 또는 sel)
+function sparkle(stage, pts, o={}){
+  const {color=AM,dur=1.8,size=14}=o; const svg=stage.querySelector("svg");
+  let list=pts;
+  if(typeof pts==="string"){ list=[...stage.querySelectorAll(pts)].map(e=>{
+    if(svg){ return [ +e.getAttribute("cx"), +e.getAttribute("cy") ]; }
+    return [e.offsetLeft+e.offsetWidth/2, e.offsetTop+e.offsetHeight/2]; }); }
+  list.forEach(([x,y],i)=>{
+    if(svg){ const t=document.createElementNS(SVGNS,"text");
+      t.setAttribute("x",x); t.setAttribute("y",y+5); t.setAttribute("text-anchor","middle");
+      t.setAttribute("font-size",size); t.setAttribute("fill",color); t.textContent="✦";
+      t.style.transformBox="fill-box"; t.style.transformOrigin="center";
+      A(t,"aSpk",{dur,delay:(i%5)*0.35,rep:"infinite",ease:"ease-in-out"}); svg.appendChild(t); }
+    else { const d=document.createElement("div"); d.textContent="✦";
+      d.style.cssText=`position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%);color:${color};font-size:${size}px;pointer-events:none`;
+      (stage.firstElementChild||stage).appendChild(d); A(d,"aSpk",{dur,delay:(i%5)*0.35,rep:"infinite"}); }
+  });
+}
+// 10 광택 스윕: 막대/카드 위로 빛줄기가 지나감
+function sheen(stage, els, o={}){
+  const {gap=0.4,dur=3.0}=o; const list=_items(stage, els);
+  list.forEach((el,i)=>{ if(getComputedStyle(el).position==="static") el.style.position="relative";
+    el.style.overflow="hidden"; const s=document.createElement("div");
+    s.style.cssText=`position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);pointer-events:none`;
+    el.appendChild(s); A(s,"aSheen",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 11 미세 부유
+function floatBob(stage, sel, o={}){
+  const {dur=2.8,gap=0.3}=o; [...stage.querySelectorAll(sel)].forEach((el,i)=>{
+    el.style.transformBox="fill-box"; A(el,"aFloatLife",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 12 흔들림
+function wobbleLife(stage, sel, o={}){
+  const {dur=1.8}=o; const t=stage.querySelector(sel); if(!t) return;
+  t.style.transformOrigin="50% 80%"; A(t,"aWobbleLife",{dur,rep:"infinite",ease:"ease-in-out"});
 }
 
 // ===== 컴포넌트별 맞춤 모션 =====
