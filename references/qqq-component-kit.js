@@ -100,12 +100,7 @@ const C=[
 
 // ---- E 주기 ----
 {n:26,type:"loop-diagram",en:"LoopDiagram / CycleDiagram",ko:"순환 루프",cat:"E",use:"반복 개선 사이클, PDCA.",render:()=>{const cx=85,cy=85,R=56;const st=[["P",BL],["D",EM],["C",AM],["A",RO]];let r=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${GRID}" stroke-width="2" stroke-dasharray="5 5"/>`;st.forEach(([t,f],i)=>{const a=-90+i*90;const x=cx+R*Math.cos(a*Math.PI/180),y=cy+R*Math.sin(a*Math.PI/180);r+=glossCircle(x,y,17,f)+`<text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" font-weight="900" fill="#fff">${t}</text>`;});return Sg(170,170,r,st.map(s=>s[1]))}},
-{n:27,type:"gear-cycle",en:"GearCycle",ko:"톱니바퀴",cat:"E",tag:"new",use:"맞물려 도는 톱니바퀴. PPT 기어 SmartArt.",render:()=>{
-  const gearPath=(cx,cy,inner,outer,count)=>{let d="";for(let i=0;i<count*2;i++){const r=i%2?inner:outer,a=-Math.PI/2+i*Math.PI/count,x=(cx+r*Math.cos(a)).toFixed(1),y=(cy+r*Math.sin(a)).toFixed(1);d+=(i?"L":"M")+x+" "+y;}return d+"Z";};
-  const gear=(cx,cy,R,f,lbl,above)=>{const k=gid(f),root=R,outer=R+9,ly=above?cy-outer-10:cy+outer+18;return `<g filter="url(#gw${k})"><path d="${gearPath(cx,cy,root,outer,12)}" fill="url(#lg${k})" stroke="rgba(255,255,255,.72)" stroke-width="1.4"/><circle cx="${cx}" cy="${cy}" r="${R*.62}" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.52)" stroke-width="1"/><circle cx="${cx}" cy="${cy}" r="${R*.34}" fill="${lighten(f,.72)}" stroke="${darken(f,.16)}" stroke-width="1.2"/><circle cx="${cx}" cy="${cy}" r="${R*.13}" fill="${darken(f,.18)}"/></g><text x="${cx}" y="${ly}" text-anchor="middle" font-size="12.5" font-weight="900" fill="${f}">${lbl}</text>`;};
-  const links=`<path d="M82 72 C98 58 112 58 127 68" fill="none" stroke="${GRID}" stroke-width="7" stroke-linecap="round"/><path d="M103 103 C108 94 115 88 124 84" fill="none" stroke="${GRID}" stroke-width="6" stroke-linecap="round"/>`;
-  return Sg(240,190,links+gear(72,68,29,BL,"투입",true)+gear(148,78,34,EM,"전환",true)+gear(110,126,21,AM,"산출"),[BL,EM,AM,INK]);
-}},
+{n:27,type:"gear-cycle",en:"GearCycle",ko:"톱니바퀴",cat:"E",tag:"new",use:"맞물려 도는 톱니바퀴. PPT 기어 SmartArt.",render:()=>{const gear=(cx,cy,R,f,lbl,above)=>{const k=gid(f);let teeth="";for(let i=0;i<10;i++){const a=i*36*Math.PI/180;const x1=cx+R*Math.cos(a),y1=cy+R*Math.sin(a),x2=cx+(R+7)*Math.cos(a),y2=cy+(R+7)*Math.sin(a);teeth+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${f}" stroke-width="6" stroke-linecap="round"/>`;}const ly=above?cy-R-11:cy+R+18;return `<g filter="url(#gw${k})">${teeth}<circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#rg${k})" stroke="rgba(255,255,255,.7)" stroke-width="1"/></g><ellipse cx="${cx}" cy="${cy-R*.4}" rx="${R*.55}" ry="${R*.3}" fill="rgba(255,255,255,.5)" style="mix-blend-mode:soft-light"/><circle cx="${cx}" cy="${cy}" r="${R*.4}" fill="${lighten(f,.78)}"/><text x="${cx}" y="${ly}" text-anchor="middle" font-size="12" font-weight="800" fill="${f}">${lbl}</text>`;};return Sg(220,162,gear(74,57,30,BL,"투입")+gear(135,79,34,EM,"전환",true)+gear(112,123,18,AM,"산출"),[BL,EM,AM])}},
 {n:28,type:"segmented-cycle",en:"SegmentedCycle",ko:"블록 순환",cat:"E",tag:"new",use:"호(arc) 블록이 도는 순환. PPT 블록 주기.",render:()=>{const cx=85,cy=85,R=58,r0=34;const st=[["봄",EM],["여름",RO],["가을",AM],["겨울",BL]];let p="";const wedge=(a0,a1,fill)=>{const rad=d=>d*Math.PI/180;const x0=cx+R*Math.cos(rad(a0)),y0=cy+R*Math.sin(rad(a0)),x1=cx+R*Math.cos(rad(a1)),y1=cy+R*Math.sin(rad(a1)),x2=cx+r0*Math.cos(rad(a1)),y2=cy+r0*Math.sin(rad(a1)),x3=cx+r0*Math.cos(rad(a0)),y3=cy+r0*Math.sin(rad(a0));return glossWedge(`M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r0} ${r0} 0 0 0 ${x3} ${y3} Z`,fill);};st.forEach(([t,f],i)=>{const a0=-88+i*90,a1=a0+84;p+=wedge(a0,a1,f);const am=(a0+a1)/2*Math.PI/180,rm=(R+r0)/2;p+=`<text x="${cx+rm*Math.cos(am)}" y="${cy+rm*Math.sin(am)+4}" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">${t}</text>`;});return Sg(170,170,p,st.map(s=>s[1]))}},
 
 // ---- F 계층·구조 ----
@@ -193,10 +188,12 @@ function A(el,name,o={}){
   el.style.animationTimingFunction=ease;
   if(dir) el.style.animationDirection=dir;
 }
+// 등장 전용: 1회 재생 후 정착 유지(절대 사라지지 않음)
+function enterA(el,name,o={}){ A(el,name,Object.assign({rep:1,fill:"forwards"},o)); }
 // 자식들을 순차 등장
 function cascade(stage,name,o={}){
   const {gap=0.16,dur=5,base=0.1,origin,box,ease}=o;
-  kids(stage).forEach((el,i)=>A(el,name,{dur,delay:base+i*gap,origin,box,ease}));
+  kids(stage).forEach((el,i)=>enterA(el,name+"In",{dur,delay:base+i*gap,origin,box,ease}));
 }
 // 선(획)을 손으로 그리듯 — line/polyline/path(fill:none)
 function drawStrokes(stage,o={}){
@@ -209,13 +206,13 @@ function drawStrokes(stage,o={}){
     let L; try{L=p.getTotalLength();}catch(e){return;}
     if(!L||!isFinite(L)) return;
     p.style.setProperty("--len",L); p.style.strokeDasharray=L; p.style.strokeDashoffset=L;
-    A(p,"aDraw",{dur,delay:base+i*gap,ease:EZL});
+    enterA(p,"aDrawIn",{dur,delay:base+i*gap,ease:EZL});
   });
 }
 // 점/마디 톡톡 등장
 function pop(stage,sel,o={}){
   const {gap=0.14,dur=5,base=0.2}=o;
-  [...stage.querySelectorAll(sel)].forEach((el,i)=>A(el,"aPop",{dur,delay:base+i*gap,box:"fill-box",origin:"center"}));
+  [...stage.querySelectorAll(sel)].forEach((el,i)=>enterA(el,"aPopIn",{dur,delay:base+i*gap,box:"fill-box",origin:"center"}));
 }
 // 선 위를 흐르는 점
 function flowDot(stage,d,color,o={}){
@@ -231,12 +228,6 @@ function flowDot(stage,d,color,o={}){
   // 점은 선 위·도형 아래에 깔린다(노드 글자를 가리지 않게)
   const ref=svg.querySelector("circle,rect,ellipse");
   if(ref) svg.insertBefore(c,ref); else svg.appendChild(c);
-}
-// 호(arc)·파이 조각: 피었다가 완전히 사라진 뒤 다음이 뜨도록 (겹침 방지)
-function bloomWedges(stage){
-  const paths=[...stage.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";});
-  paths.forEach((p,i)=>A(p,"aBloom",{dur:6,delay:0.5*Math.floor(i/2),box:"fill-box",origin:"center"}));
-  [...stage.querySelectorAll("text")].forEach((t,i)=>A(t,"aBloom",{dur:6,delay:0.1+0.5*i,box:"fill-box",origin:"center"}));
 }
 // <line>들을 따라 흐르는 점들
 function lineDots(stage,colors){
@@ -258,6 +249,97 @@ function smilRotate(el,vals,dur){
   el.insertBefore(a, el.firstChild);
 }
 
+// ===== 생명 레이어 헬퍼 (정착 후 영구·비파괴) =====
+function _items(stage, els){ return Array.isArray(els) ? els : [...stage.querySelectorAll(els)]; }
+
+// 1 강조 순회: 조각/카드/층을 하나씩 차례로 강조
+function cycleHighlight(stage, els, o={}){
+  const {step=0.9}=o; const list=_items(stage, els||":scope > *"); const n=list.length; if(!n) return;
+  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; el.style.transformOrigin="center";
+    A(el,"aCycleHi",{dur:n*step,delay:i*step,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 2 양쪽 번갈아: 두(또는 N) 영역 교대 강조
+function altEmphasis(stage, els, o={}){
+  const {dur=3.0}=o; const list=_items(stage, els); const n=list.length; if(!n) return;
+  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; el.style.transformOrigin="center";
+    A(el,"aAlt",{dur,delay:i*(dur/n),rep:"infinite",ease:"ease-in-out"}); });
+}
+// 4 축 따라 이동 마커: 가로 축을 따라 글로우 마커가 한 방향 이동
+function axisMarker(stage, o={}){
+  const {dur=4.5,color=RO,top}=o; const box=stage.firstElementChild||stage; box.style.position="relative";
+  const mk=document.createElement("div");
+  mk.style.cssText=`position:absolute;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,${color},#fff0 70%);box-shadow:0 0 14px ${color};transform:translate(-50%,-50%);left:6%;top:${top!=null?top+"px":"50%"};pointer-events:none`;
+  box.appendChild(mk); A(mk,"aTravel",{dur,rep:"infinite",ease:EZL});
+}
+// 5 방향 펄스: 화살표/마디가 순서대로 톡톡 빛남
+function dirPulse(stage, sel, o={}){
+  const {dur=1.4,gap=0.18}=o; const list=[...stage.querySelectorAll(sel)];
+  list.forEach((el,i)=>{ el.style.transformBox="fill-box"; A(el,"aChev",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 6 글로우 호흡: 대상 뒤에 헤일로를 깔고 숨쉬게 함(글씨 정지)
+function breatheGlow(stage, sel, o={}){
+  const {color=AM,size=130}=o; const t=stage.querySelector(sel)||stage.firstElementChild; if(!t) return;
+  const host=t.parentElement||stage; if(getComputedStyle(host).position==="static") host.style.position="relative";
+  const halo=document.createElement("div");
+  halo.style.cssText=`position:absolute;left:50%;top:50%;width:${size}px;height:${size}px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,${color} 0%,transparent 70%);filter:blur(8px);z-index:0;pointer-events:none`;
+  host.insertBefore(halo, host.firstChild); A(halo,"aBreath",{dur:3.4,rep:"infinite",ease:"ease-in-out"});
+}
+// 7 맥박
+function pulseLife(stage, sel, o={}){
+  const {dur=1.6}=o; const t=stage.querySelector(sel)||stage.firstElementChild; if(!t) return;
+  t.style.transformBox="fill-box"; t.style.transformOrigin="center"; A(t,"aPulseLife",{dur,rep:"infinite",ease:"ease-in-out"});
+}
+// 8 파동 펄스: 중심(cx,cy)에서 SVG 링이 퍼짐
+function ripple(stage, cx, cy, o={}){
+  const {color=TL,dur=2.6,n=3,r0=14}=o; const svg=stage.querySelector("svg"); if(!svg) return;
+  for(let i=0;i<n;i++){ const c=document.createElementNS(SVGNS,"circle");
+    c.setAttribute("cx",cx); c.setAttribute("cy",cy); c.setAttribute("r",r0);
+    c.setAttribute("fill","none"); c.setAttribute("stroke",color); c.setAttribute("stroke-width","2.5");
+    c.style.transformBox="fill-box"; c.style.transformOrigin=`${cx}px ${cy}px`;
+    A(c,"aRipple",{dur,delay:i*(dur/n),rep:"infinite",ease:"ease-out"});
+    svg.insertBefore(c, svg.firstChild); }
+}
+// 9 반짝임: 좌표 목록 위에 ✦ 스파클을 깜빡임 (pts: [[x,y],...] 또는 sel)
+function sparkle(stage, pts, o={}){
+  const {color=AM,dur=1.8,size=14}=o; const svg=stage.querySelector("svg");
+  let list=pts;
+  if(typeof pts==="string"){ list=[...stage.querySelectorAll(pts)].map(e=>{
+    if(svg){ return [ +e.getAttribute("cx"), +e.getAttribute("cy") ]; }
+    return [e.offsetLeft+e.offsetWidth/2, e.offsetTop+e.offsetHeight/2]; }); }
+  list.forEach(([x,y],i)=>{
+    if(svg){ const t=document.createElementNS(SVGNS,"text");
+      t.setAttribute("x",x); t.setAttribute("y",y+5); t.setAttribute("text-anchor","middle");
+      t.setAttribute("font-size",size); t.setAttribute("fill",color); t.textContent="✦";
+      t.style.transformBox="fill-box"; t.style.transformOrigin="center";
+      A(t,"aSpk",{dur,delay:(i%5)*0.35,rep:"infinite",ease:"ease-in-out"}); svg.appendChild(t); }
+    else { const d=document.createElement("div"); d.textContent="✦";
+      d.style.cssText=`position:absolute;left:${x}px;top:${y}px;transform:translate(-50%,-50%);color:${color};font-size:${size}px;pointer-events:none`;
+      (stage.firstElementChild||stage).appendChild(d); A(d,"aSpk",{dur,delay:(i%5)*0.35,rep:"infinite"}); }
+  });
+}
+// 10 광택 스윕: 막대/카드 위로 빛줄기가 지나감
+function sheen(stage, els, o={}){
+  const {gap=0.4,dur=3.0}=o; const list=_items(stage, els);
+  list.forEach((el,i)=>{ if(getComputedStyle(el).position==="static") el.style.position="relative";
+    el.style.overflow="hidden"; const s=document.createElement("div");
+    s.style.cssText=`position:absolute;top:0;left:0;width:55%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);pointer-events:none`;
+    el.appendChild(s); A(s,"aSheen",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 11 미세 부유
+function floatBob(stage, sel, o={}){
+  const {dur=2.8,gap=0.3}=o; [...stage.querySelectorAll(sel)].forEach((el,i)=>{
+    el.style.transformBox="fill-box"; A(el,"aFloatLife",{dur,delay:i*gap,rep:"infinite",ease:"ease-in-out"}); });
+}
+// 12 흔들림
+function wobbleLife(stage, sel, o={}){
+  const {dur=1.8}=o; const t=stage.querySelector(sel); if(!t) return;
+  t.style.transformOrigin="50% 80%"; A(t,"aWobbleLife",{dur,rep:"infinite",ease:"ease-in-out"});
+}
+// polyline → path d 변환
+function polyToPath(p){ const pts=(p.getAttribute("points")||"").trim(); return pts? "M"+pts.replace(/\s+/g," ").replace(/,/g," ") : (p.getAttribute("d")||""); }
+// line 또는 polyline → path d 변환
+function lineToPath(ln){ if(ln.tagName.toLowerCase()==="line"){ return `M${ln.getAttribute("x1")} ${ln.getAttribute("y1")} L${ln.getAttribute("x2")} ${ln.getAttribute("y2")}`; } return polyToPath(ln); }
+
 // ===== 컴포넌트별 맞춤 모션 =====
 const SHOW={
   // 20 세로 단계: 위→아래 하나씩, 연결선은 차례로 그려지듯
@@ -267,49 +349,36 @@ const SHOW={
   // 21 선형 흐름: 왼→오 순차
   21:s=>cascade(s,"aSlideL",{gap:0.16}),
   // 26 순환 루프: 마디 순차 + 원 둘레를 도는 점
-  26:s=>{ pop(s,"circle",{base:0.3,gap:0.22});
-      flowDot(s,"M85 29 a56 56 0 1 1 -0.1 0",BL,{dur:3.4,delay:0,r:4}); },
-  // 27 톱니바퀴: 맞물려 천천히 회전
-  27:s=>{ const gs=[...s.querySelectorAll("g")].filter(g=>g.getAttribute("filter"));
-      const cf=[{t:18,d:"normal"},{t:21,d:"reverse"},{t:14,d:"normal"}];
-      gs.forEach((g,i)=>{const c=cf[i]||cf[0]; A(g,"aSpin",{dur:c.t,ease:"linear",box:"fill-box",origin:"center",dir:c.d});}); },
-  // 28 블록 순환: 봄→여름→가을→겨울 차례로 피었다 완전히 사라진 뒤 봄이 다시 (겹침 없음)
-  28:s=>bloomWedges(s),
+  26:s=>{ pop(s,"circle",{base:0.3,gap:0.22}); },
+  // 27 톱니바퀴: 맞물려 회전
+  27:s=>{},
+  // 28 블록 순환: 조각 팝인 정착(사라짐 없음)
+  28:s=>{ [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";})
+        .forEach((p,i)=>enterA(p,"aPopIn",{dur:.6,delay:0.1+i*0.12,box:"fill-box",origin:"center"})); },
   // 29 개념망 / 30 관계도: 선 그려지고 그 위로 점이 흐름
   29:s=>{ drawStrokes(s,{gap:0.12,dur:5}); pop(s,"circle",{base:0.7,gap:0.16}); lineDots(s,[BL,EM,AM,RO]); },
   30:s=>{ drawStrokes(s,{gap:0.14,dur:5}); pop(s,"circle",{base:0.7,gap:0.18}); lineDots(s,[RO,EM,BL]); },
   // 35 방사형: 중심에서 가지가 뻗고 점이 바깥으로
-  35:s=>{ drawStrokes(s,{gap:0.12,dur:5,base:0.2}); pop(s,"circle",{base:0.7,gap:0.16});
-      [...s.querySelectorAll("path")].forEach((p,i)=>{const m=(p.getAttribute("d")||"").match(/M([\d.]+) ([\d.]+) L([\d.]+) ([\d.]+)/);
-        if(m) flowDot(s,`M${m[1]} ${m[2]} L${m[3]} ${m[4]}`,EM,{dur:1.8,delay:1+i*0.2,r:3});}); },
+  35:s=>{ drawStrokes(s,{gap:0.12,dur:5,base:0.2}); pop(s,"circle",{base:0.7,gap:0.16}); },
   // 33 삼위일체: 가지선은 항상 보이게(정적) 두고 노드만 등장 — 윗선이 지워지는 구간이 없게
   33:s=>pop(s,"circle",{base:0.4,gap:0.16,dur:5}),
   // 38 벤다이어그램: 애니메이션 없이 정지
   38:s=>{},
   // 40 동심원: 애니메이션 없이 정지
   40:s=>{},
-  // 37 스펙트럼: 마커가 좌우로 왔다갔다 하다 오른쪽(긍정)에 정착
+  // 37 스펙트럼: 마커가 좌우로 왔다갔다 하다 중앙(중도)에 정착
   37:s=>{ const o=s.firstElementChild; o.style.position="relative"; const bar=o.firstElementChild;
       const mk=document.createElement("div");
       mk.style.cssText=`position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid ${INK};box-shadow:0 3px 9px rgba(15,23,42,.3);transform:translateX(-50%);left:6%`;
       mk.style.top=(bar.offsetTop+bar.offsetHeight/2-10)+"px"; mk.style.setProperty("--settle","87%"); o.appendChild(mk);
-      A(mk,"aSweepSettle",{dur:5,ease:EZL,rep:"1"}); },
-  // 39 양팔 저울: 수평에서 시작 → 오른쪽(평등)이 무거워 내려감. 보는 회전, 추는 수평 유지하며 상하 이동
-  39:s=>{ const kt="0;0.16;0.30;0.44;0.74;1", ks=".3 0 .3 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.5 0 .4 1", dur="4.4s";
-    const mk=(el,type,vals)=>{ if(!el)return; const a=document.createElementNS(SVGNS,"animateTransform");
-      a.setAttribute("attributeName","transform"); a.setAttribute("type",type); a.setAttribute("values",vals);
-      a.setAttribute("keyTimes",kt); a.setAttribute("calcMode","spline"); a.setAttribute("keySplines",ks);
-      a.setAttribute("dur",dur); a.setAttribute("repeatCount","indefinite"); el.insertBefore(a,el.firstChild); };
-    mk(s.querySelector(".js-beam"),"rotate","0 100 38;11 100 38;6 100 38;9 100 38;8 100 38;0 100 38");
-    mk(s.querySelector(".js-panR"),"translate","0 0;0 10.7;0 5.9;0 8.8;0 7.8;0 0");
-    mk(s.querySelector(".js-panL"),"translate","0 0;0 -10.7;0 -5.9;0 -8.8;0 -7.8;0 0"); },
-  // 45 잠깐 생각: 이모지 갸우뚱 + 머리 위로 물음표가 솟아오름
+      enterA(mk,"aSweepSettle",{dur:5,ease:EZL}); },
+  // 39 양팔 저울: SMIL 시소 → LIFE로 이전
+  39:s=>{},
+  // 45 잠깐 생각: 물음표 1회 등장(enterA), 이모지 갸우뚱은 LIFE로
   45:s=>{ const d=s.firstElementChild; d.style.position="relative"; d.style.paddingTop="18px";
-      const emo=d.firstElementChild; emo.style.display="inline-block"; emo.style.transformOrigin="50% 85%";
-      A(emo,"aWobble",{dur:1.5,ease:"ease-in-out"});
       const q=document.createElement("div"); q.textContent="?";
       q.style.cssText=`position:absolute;left:50%;top:-8px;font-size:30px;font-weight:900;color:${BL};text-shadow:0 2px 6px ${BL}55`;
-      d.insertBefore(q,d.firstChild); A(q,"aQMark",{dur:3.2,ease:EZ}); },
+      d.insertBefore(q,d.firstChild); enterA(q,"aQMark",{dur:3.2,ease:EZ}); },
   // 46 OX 퀴즈: 두 선택지 등장 후 정답(O)에 동그라미가 그려짐
   46:s=>{ const box=s.firstElementChild; box.style.position="relative";
       const q=box.firstElementChild; if(q) q.style.marginBottom="24px";   // 글자와 OX 사이 간격 넓힘
@@ -337,25 +406,122 @@ const SHOW={
       if(bar) A(bar,"aGrowX",{dur:5,delay:0.15+i*0.16,origin:"left center"}); }); },
   // 55 롤리팝: 막대가 왼→오로 그려지고 끝의 원이 톡
   55:s=>{ drawStrokes(s,{gap:0.2,dur:5}); pop(s,"circle",{base:0.6,gap:0.2}); },
-  // 58 100% 스택: 경계가 좌우로 왔다갔다 하다가 정착
-  58:s=>{ kids(s).forEach((row,ri)=>{ const bar=row.lastElementChild; if(!bar) return;
-      const seg1=bar.children[0], seg2=bar.children[1]; if(!seg1||!seg2) return;
-      const w=seg1.style.width||"50%";
-      seg1.style.flex="none"; seg2.style.flex="1"; seg2.style.width="auto";   // 둘째가 남는 폭을 채워 서로 밀어냄
-      seg1.style.setProperty("--w",w);
-      A(seg1,"aPush",{dur:5,delay:ri*0.3,ease:"ease-in-out"}); }); },
+  // 58 100% 스택: 막대·세그먼트는 등장 즉시 정착(별도 모션 없음)
+  58:s=>{ /* 막대·세그먼트는 등장 즉시 정착(별도 모션 없음) */ },
   // 63 산점도: 점을 하나씩 손으로 찍고 추세선을 그림
   63:s=>pop(s,"circle",{base:0.3,gap:0.22,dur:5}),
   // 59 영역 차트: 선을 그리는 동안 면(area)도 왼→오로 같이 차오름
   59:s=>{ drawStrokes(s,{dur:5}); const a=s.querySelector("polygon"); if(a) A(a,"aWipeX",{dur:5,ease:EZL}); },
-  // 60 파이: 조각이 차례로 피었다 완전히 사라진 뒤 다음 (겹침 없음)
-  60:s=>bloomWedges(s),
-  // 61 도넛: 조각이 숫자와 함께 차례로 피었다 사라짐
-  61:s=>bloomWedges(s),
-  // 62 레이더: 5각형 격자는 가만, 파랑 데이터만 가운데에서 퍼지듯 자람
+  // 60 파이: 조각 팝인 정착(사라짐 없음)
+  60:s=>{ [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";})
+        .forEach((p,i)=>enterA(p,"aPopIn",{dur:.6,delay:0.1+i*0.12,box:"fill-box",origin:"center"})); },
+  // 61 도넛: 조각 팝인 정착(사라짐 없음)
+  61:s=>{ [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";})
+        .forEach((p,i)=>enterA(p,"aPopIn",{dur:.6,delay:0.1+i*0.12,box:"fill-box",origin:"center"})); },
+  // 62 레이더: 데이터 폴리곤 1회 등장 정착(사라짐 없음)
   62:s=>{ const ps=[...s.querySelectorAll("polygon")]; const data=ps[ps.length-1];
-      if(data) A(data,"aGrowC",{dur:5,box:"view-box",origin:"85px 85px"}); },
+      if(data) enterA(data,"aGrowCIn",{dur:.9,box:"view-box",origin:"85px 85px"}); },
 };
+
+// 등장(1회): 기존 SHOW/generic/chart 가 정착 키프레임으로 1회 재생
+function enter(c,stage){ (SHOW[c.n] || (()=>generic(c,stage)))(stage); }
+// 생명(영구): 컴포넌트별 LIFE 효과 적용
+const LIFE = {
+  26:s=>{ flowDot(s,"M85 29 a56 56 0 1 1 -0.1 0",BL,{dur:3.4,delay:0,r:4}); },
+  27:s=>{ const gs=[...s.querySelectorAll("g")].filter(g=>g.getAttribute("filter"));
+    const cf=[{t:12,d:"normal"},{t:13.5,d:"reverse"},{t:7,d:"normal"}];
+    gs.forEach((g,i)=>{const c=cf[i]||cf[0]; A(g,"aSpin",{dur:c.t,ease:"linear",box:"fill-box",origin:"center",dir:c.d,rep:"infinite"});}); },
+  35:s=>{ [...s.querySelectorAll("path")].forEach((p,i)=>{const m=(p.getAttribute("d")||"").match(/M([\d.]+) ([\d.]+) L([\d.]+) ([\d.]+)/);
+    if(m) flowDot(s,`M${m[1]} ${m[2]} L${m[3]} ${m[4]}`,EM,{dur:1.8,delay:1+i*0.2,r:3});}); },
+  37:s=>{},
+  39:s=>{ const kt="0;0.16;0.30;0.44;0.74;1", ks=".3 0 .3 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.5 0 .4 1", dur="4.4s";
+    const mk=(el,type,vals)=>{ if(!el)return; const a=document.createElementNS(SVGNS,"animateTransform");
+      a.setAttribute("attributeName","transform"); a.setAttribute("type",type); a.setAttribute("values",vals);
+      a.setAttribute("keyTimes",kt); a.setAttribute("calcMode","spline"); a.setAttribute("keySplines",ks);
+      a.setAttribute("dur",dur); a.setAttribute("repeatCount","indefinite"); el.insertBefore(a,el.firstChild); };
+    mk(s.querySelector(".js-beam"),"rotate","0 100 38;11 100 38;6 100 38;9 100 38;8 100 38;0 100 38");
+    mk(s.querySelector(".js-panR"),"translate","0 0;0 10.7;0 5.9;0 8.8;0 7.8;0 0");
+    mk(s.querySelector(".js-panL"),"translate","0 0;0 -10.7;0 -5.9;0 -8.8;0 -7.8;0 0"); },
+  45:s=>{ const emo=s.firstElementChild&&s.firstElementChild.querySelector("*");
+    const e=[...s.querySelectorAll("*")].find(x=>x.textContent&&/\p{Emoji}/u.test(x.textContent));
+    if(e){ e.style.display="inline-block"; e.style.transformOrigin="50% 85%"; A(e,"aWobble",{dur:1.5,ease:"ease-in-out",rep:"infinite"}); } },
+  // 재설계: 강조 순환 / 광택 / 반짝임
+  28:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
+  58:s=>sheen(s, kids(s).map(r=>r.lastElementChild).filter(Boolean)),
+  60:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
+  61:s=>cycleHighlight(s, [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";}), {step:0.85}),
+  62:s=>{ const ps=[...s.querySelectorAll("polygon")]; const data=ps[ps.length-1];
+        const pts=(data?.getAttribute("points")||"").trim().split(/\s+/).map(pr=>pr.split(",").map(Number));
+        sparkle(s, pts, {color:BL,size:13}); },
+  // 텍스트류 (A)
+  1:s=>breatheGlow(s, ".kw, h1, .big, :scope *", {color:AM}),
+  2:s=>breatheGlow(s, ":scope *", {color:BL}),
+  3:s=>sheen(s, [s.firstElementChild].filter(Boolean)),
+  5:s=>pulseLife(s, ".quote-mark, :scope *"),
+  6:s=>sheen(s, [s.querySelector(".divider, hr, .ln")||s.firstElementChild].filter(Boolean)),
+  7:s=>wobbleLife(s, ".qmark, :scope *"),
+  // 카드·목록 (B)
+  8:s=>cycleHighlight(s, kids(s)),
+  9:s=>cycleHighlight(s, kids(s)),
+  10:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+8])),
+  11:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+8])),
+  12:s=>dirPulse(s, ".num, .badge, :scope > *"),
+  13:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+14,e.offsetTop+e.offsetHeight/2])),
+  48:s=>sheen(s, kids(s)),
+  51:s=>sparkle(s, kids(s).map(e=>[e.offsetLeft+14,e.offsetTop+e.offsetHeight/2])),
+  // 비교 (C)
+  14:s=>altEmphasis(s, kids(s)),
+  15:s=>dirPulse(s, "path, .arrow, :scope > *"),
+  16:s=>altEmphasis(s, kids(s)),
+  17:s=>{ altEmphasis(s, kids(s).filter(e=>!/vs/i.test(e.textContent))); pulseLife(s, ".vs, .badge"); },
+  18:s=>cycleHighlight(s, kids(s)),
+  // 흐름 (D)
+  19:s=>dirPulse(s, "path, polyline, .arrow, :scope > *"),
+  20:s=>lineDots(s,[BL,EM,AM,RO]),
+  21:s=>dirPulse(s, ":scope > *"),
+  22:s=>dirPulse(s, "path, polyline, .arrow"),
+  23:s=>dirPulse(s, "path, polyline, .arrow, :scope > *"),
+  24:s=>dirPulse(s, ".chev, path, :scope > *"),
+  25:s=>cycleHighlight(s, kids(s)),
+  // 관계·구조 (F)
+  29:s=>lineDots(s,[BL,EM,AM,RO]),
+  30:s=>lineDots(s,[RO,EM,BL]),
+  31:s=>cycleHighlight(s, kids(s)),
+  32:s=>cycleHighlight(s, kids(s)),
+  33:s=>lineDots(s,[BL,EM,RO]),
+  34:s=>lineDots(s,[BL,EM,AM]),
+  36:s=>dirPulse(s, ":scope > *"),
+  40:s=>ripple(s, 85, 75, {color:AM}),
+  // 타임라인 (G)
+  41:s=>axisMarker(s,{color:RO}),
+  42:s=>cycleHighlight(s, kids(s)),
+  43:s=>breatheGlow(s, ".moment, :scope *", {color:BL}),
+  // 수업 (H)
+  44:s=>floatBob(s, ".bubble, :scope *"),
+  46:s=>{ const ok=s.querySelector("span"); if(ok) sparkle(s,[[ok.offsetLeft+ok.offsetWidth/2, ok.offsetTop+ok.offsetHeight/2]],{color:EM}); },
+  47:s=>sparkle(s, [...s.querySelectorAll(".check, span")].slice(0,1).map(e=>[e.offsetLeft+e.offsetWidth/2,e.offsetTop+e.offsetHeight/2])),
+  // 마무리 (I)
+  49:s=>lineDots(s,[EM,AM,SK,RO]),
+  50:s=>breatheGlow(s, ":scope *", {color:AM}),
+  // 차트 (J, K)
+  52:s=>sparkle(s, [[ (s.firstElementChild?.offsetWidth||120)/2, (s.firstElementChild?.offsetHeight||60)/2 ]], {color:AM}),
+  53:s=>sheen(s, [...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)),
+  54:s=>sheen(s, kids(s).map(it=>it.lastElementChild&&it.lastElementChild.firstElementChild).filter(Boolean)),
+  55:s=>sheen(s, [...s.querySelectorAll("line")]),
+  56:s=>{ const p=s.querySelector("polyline,path[fill='none']"); if(p) flowDot(s,p.getAttribute("d")||polyToPath(p),BL,{dur:2.6}); },
+  57:s=>[...s.querySelectorAll("line,polyline")].forEach((p,i)=>flowDot(s, lineToPath(p), col(i), {dur:2.4,delay:i*0.3})),
+  59:s=>sheen(s, [s.querySelector("polygon")].filter(Boolean)),
+  63:s=>sparkle(s, "circle"),
+  64:s=>sparkle(s, "circle"),
+  65:s=>dirPulse(s, "rect"),
+  66:s=>dirPulse(s, "path, polygon, :scope > *"),
+  67:s=>sheen(s, [...s.querySelectorAll("rect")]),
+  68:s=>dirPulse(s, "rect"),
+  69:s=>{ sheen(s,[...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("height")||0)>0)); const p=s.querySelector("polyline,path[fill='none']"); if(p) flowDot(s,p.getAttribute("d")||polyToPath(p),RO,{dur:2.6}); },
+  // 로고 (L)
+  82:s=>sheen(s, kids(s)),
+};
+function live(c,stage){ const f=LIFE[c.n]; if(f){ try{ f(stage); }catch(e){} } }
 
 // ===== 카테고리 기본 모션 =====
 function generic(c,s){
@@ -379,10 +545,10 @@ function generic(c,s){
 function chart(c,s){
   const n=c.n, horiz=(n===54);
   const rects=[...s.querySelectorAll("rect")].filter(r=>+(r.getAttribute("rx")||0)<=9 && +(r.getAttribute("height")||0)>0);
-  rects.forEach((r,i)=>A(r,horiz?"aGrowX":"aGrowY",{dur:5,delay:0.15+i*0.1,box:"fill-box",origin:horiz?"left":"bottom"}));
+  rects.forEach((r,i)=>enterA(r,horiz?"aGrowXIn":"aGrowYIn",{dur:5,delay:0.15+i*0.1,box:"fill-box",origin:horiz?"left":"bottom"}));
   drawStrokes(s,{gap:0.2,dur:5,base:0.2});
   [...s.querySelectorAll("path")].filter(p=>{const f=p.getAttribute("fill");return f&&f!=="none";})
-    .forEach((p,i)=>A(p,"aFade",{dur:5,delay:0.2+i*0.14}));
+    .forEach((p,i)=>enterA(p,"aFadeIn",{dur:5,delay:0.2+i*0.14}));
   pop(s,"circle",{base:0.6,gap:0.1});
   if(!rects.length && !s.querySelector("path,polyline,line,circle")) cascade(s,"aPop",{gap:0.12});
 }
@@ -390,11 +556,13 @@ function chart(c,s){
 // 한 무대에 모션 적용
 function animate(c,stage){
   if(!stage || stage.dataset.animed) return; stage.dataset.animed="1";
-  try{ (SHOW[c.n] || (cc=>generic(c,stage)))(stage); }catch(e){}
+  try{ enter(c,stage); }catch(e){}
+  var reduce = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!reduce) live(c,stage);
 }
 
 // ===== 키프레임 자동 주입 =====
-var __QQQ_KF="/* ===================== 모션 키트 (Remotion-풍 루프) ===================== */\n  /* 등장 → 유지 → 리셋 후 반복. 14%~86% 구간은 '정착' 상태로 길게 유지된다. */\n  @keyframes aRiseT{0%{opacity:0;transform:translateY(-15px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-15px)}}\n  @keyframes aRiseB{0%{opacity:0;transform:translateY(16px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(16px)}}\n  @keyframes aSlideL{0%{opacity:0;transform:translateX(-22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-22px)}}\n  @keyframes aSlideR{0%{opacity:0;transform:translateX(22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(22px)}}\n  @keyframes aPop{0%{opacity:0;transform:scale(.55)}11%{opacity:1;transform:scale(1.09)}19%,86%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.55)}}\n  @keyframes aFade{0%{opacity:0}15%,88%{opacity:1}100%{opacity:0}}\n  @keyframes aGrowY{0%{transform:scaleY(0)}17%,87%{transform:scaleY(1)}100%{transform:scaleY(0)}}\n  @keyframes aGrowX{0%{transform:scaleX(0)}17%,87%{transform:scaleX(1)}100%{transform:scaleX(0)}}\n  @keyframes aDraw{0%{stroke-dashoffset:var(--len)}32%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:var(--len)}}\n  @keyframes aSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}\n  @keyframes aWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-11deg)}50%{transform:rotate(0)}75%{transform:rotate(11deg)}}\n  @keyframes aFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}\n  @keyframes aPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}\n  @keyframes aQMark{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.3)}28%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}82%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(0) scale(1)}}\n  @keyframes aSweepSettle{0%{left:6%}16%{left:92%}33%{left:13%}50%{left:82%}66%{left:38%}78%,100%{left:var(--settle,50%)}}\n  /* 블록·파이 조각: 피었다가 완전히 사라진 뒤 다음이 뜨도록 (겹침 없음) */\n  @keyframes aBloom{0%{opacity:0;transform:scale(.5)}6%{opacity:1;transform:scale(1.06)}12%{transform:scale(1)}55%{opacity:1;transform:scale(1)}63%{opacity:0;transform:scale(.5)}100%{opacity:0;transform:scale(.5)}}\n  /* 면(area)이 왼→오로 차올랐다 줄어듦 */\n  @keyframes aWipeX{0%{clip-path:inset(0 100% 0 0)}32%,86%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}\n  /* 가운데에서 퍼지듯 자람 (레이더 데이터) */\n  @keyframes aGrowC{0%{transform:scale(0);opacity:.35}24%{transform:scale(1);opacity:1}86%{transform:scale(1);opacity:1}100%{transform:scale(0);opacity:.35}}\n  /* 100% 스택: 두 영역이 서로 밀어내며 넓어졌다 줄었다 정착 */\n  @keyframes aPush{0%{width:var(--w)}15%{width:calc(var(--w) + 16%)}35%{width:calc(var(--w) - 12%)}55%{width:calc(var(--w) + 7%)}75%{width:calc(var(--w) - 3%)}90%,100%{width:var(--w)}}\n  @media (prefers-reduced-motion: reduce){ .stage *{animation:none !important;} }";
+var __QQQ_KF="/* ===================== 모션 키트 (Remotion-풍 루프) ===================== */\n  /* 등장 → 유지 → 리셋 후 반복. 14%~86% 구간은 '정착' 상태로 길게 유지된다. */\n  @keyframes aRiseT{0%{opacity:0;transform:translateY(-15px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-15px)}}\n  @keyframes aRiseB{0%{opacity:0;transform:translateY(16px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateY(16px)}}\n  @keyframes aSlideL{0%{opacity:0;transform:translateX(-22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-22px)}}\n  @keyframes aSlideR{0%{opacity:0;transform:translateX(22px)}13%,86%{opacity:1;transform:none}100%{opacity:0;transform:translateX(22px)}}\n  @keyframes aPop{0%{opacity:0;transform:scale(.55)}11%{opacity:1;transform:scale(1.09)}19%,86%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.55)}}\n  @keyframes aFade{0%{opacity:0}15%,88%{opacity:1}100%{opacity:0}}\n  @keyframes aGrowY{0%{transform:scaleY(0)}17%,87%{transform:scaleY(1)}100%{transform:scaleY(0)}}\n  @keyframes aGrowX{0%{transform:scaleX(0)}17%,87%{transform:scaleX(1)}100%{transform:scaleX(0)}}\n  @keyframes aDraw{0%{stroke-dashoffset:var(--len)}32%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:var(--len)}}\n  @keyframes aSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}\n  @keyframes aWobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-11deg)}50%{transform:rotate(0)}75%{transform:rotate(11deg)}}\n  @keyframes aFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}\n  @keyframes aPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}\n  @keyframes aQMark{0%{opacity:0;transform:translateX(-50%) translateY(20px) scale(.3)}28%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}82%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(0) scale(1)}}\n  @keyframes aSweepSettle{0%{left:6%}16%{left:92%}33%{left:13%}50%{left:82%}66%{left:38%}78%,100%{left:var(--settle,50%)}}\n  /* 블록·파이 조각: 피었다가 완전히 사라진 뒤 다음이 뜨도록 (겹침 없음) */\n  @keyframes aBloom{0%{opacity:0;transform:scale(.5)}6%{opacity:1;transform:scale(1.06)}12%{transform:scale(1)}55%{opacity:1;transform:scale(1)}63%{opacity:0;transform:scale(.5)}100%{opacity:0;transform:scale(.5)}}\n  /* 면(area)이 왼→오로 차올랐다 줄어듦 */\n  @keyframes aWipeX{0%{clip-path:inset(0 100% 0 0)}32%,86%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 100% 0 0)}}\n  /* 가운데에서 퍼지듯 자람 (레이더 데이터) */\n  @keyframes aGrowC{0%{transform:scale(0);opacity:.35}24%{transform:scale(1);opacity:1}86%{transform:scale(1);opacity:1}100%{transform:scale(0);opacity:.35}}\n  /* 100% 스택: 두 영역이 서로 밀어내며 넓어졌다 줄었다 정착 */\n  @keyframes aPush{0%{width:var(--w)}15%{width:calc(var(--w) + 16%)}35%{width:calc(var(--w) - 12%)}55%{width:calc(var(--w) + 7%)}75%{width:calc(var(--w) - 3%)}90%,100%{width:var(--w)}}\n  /* ── 1회성 등장(정착에서 끝남, 사라지지 않음) ── */\n  @keyframes aRiseTIn{0%{opacity:0;transform:translateY(-15px)}100%{opacity:1;transform:none}}\n  @keyframes aRiseBIn{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}\n  @keyframes aSlideLIn{0%{opacity:0;transform:translateX(-22px)}100%{opacity:1;transform:none}}\n  @keyframes aSlideRIn{0%{opacity:0;transform:translateX(22px)}100%{opacity:1;transform:none}}\n  @keyframes aPopIn{0%{opacity:0;transform:scale(.55)}60%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:scale(1)}}\n  @keyframes aFadeIn{0%{opacity:0}100%{opacity:1}}\n  @keyframes aGrowYIn{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}\n  @keyframes aGrowXIn{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}\n  @keyframes aDrawIn{0%{stroke-dashoffset:var(--len)}100%{stroke-dashoffset:0}}\n  @keyframes aWipeXIn{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}\n  @keyframes aGrowCIn{0%{transform:scale(0);opacity:.35}100%{transform:scale(1);opacity:1}}\n  /* ── 생명 레이어(영구·비파괴) ── */\n  @keyframes aCycleHi{0%{filter:brightness(1.18);transform:scale(1.05)}12%{filter:brightness(1.18);transform:scale(1.05)}26%,100%{filter:brightness(.82);transform:scale(1)}}\n  @keyframes aAlt{0%{filter:brightness(1.12);transform:scale(1.03)}40%{filter:brightness(1.12);transform:scale(1.03)}55%,100%{filter:brightness(.8);transform:scale(.985)}}\n  @keyframes aChev{0%,100%{opacity:.25}40%{opacity:1}}\n  @keyframes aBreath{0%,100%{transform:scale(.85);opacity:.4}50%{transform:scale(1.15);opacity:.75}}\n  @keyframes aRipple{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}\n  @keyframes aSpk{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(20deg)}}\n  @keyframes aSheen{0%{transform:translateX(-160%) skewX(-18deg)}55%,100%{transform:translateX(320%) skewX(-18deg)}}\n  @keyframes aPulseLife{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}\n  @keyframes aFloatLife{0%,100%{transform:translateY(-5px)}50%{transform:translateY(5px)}}\n  @keyframes aWobbleLife{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}\n  @keyframes aTravel{0%{left:6%;opacity:0}8%{opacity:1}80%{left:94%;opacity:1}90%{left:94%;opacity:0}100%{left:6%;opacity:0}}\n  @media (prefers-reduced-motion: reduce){ .stage *{animation:none !important;} }";
 if(typeof document!=="undefined" && !document.getElementById("qqq-motion-kf")){
   var __st=document.createElement("style"); __st.id="qqq-motion-kf"; __st.textContent=__QQQ_KF;
   (document.head||document.documentElement).appendChild(__st);

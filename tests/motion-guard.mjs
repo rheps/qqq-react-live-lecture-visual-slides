@@ -63,6 +63,13 @@ for (const n of [4,38,70,71,72,73,74]) ok(`LIFE[${n}] 없음(정지)`, !new RegE
 // Task 6: 효과 있는 대표 번호 존재 확인
 for (const n of [1,2,3,5,6,7,8,12,14,17,19,20,29,31,40,41,43,44,46,53,56,63,65,82]) ok(`LIFE[${n}] 존재`, new RegExp(`\\b${n}\\s*:\\s*s\\s*=>`).test(lifeBlock));
 
+// ===== 키트 동기화 가드 (Task 7) =====
+const kit = readFileSync(join(root, "references", "qqq-component-kit.js"), "utf8");
+ok("키트에 LIFE 포함", /const LIFE\s*=/.test(kit));
+ok("키트에 cycleHighlight 포함", /function cycleHighlight/.test(kit));
+ok("키트에 aRiseTIn 키프레임 포함", /aRiseTIn/.test(kit));
+ok("키트에 bloomWedges 미포함(재설계 반영)", !/function bloomWedges/.test(kit));
+
 let failed = 0;
 for (const c of checks) { console.log(`${c.pass?"PASS":"FAIL"}  ${c.name}`); if(!c.pass) failed++; }
 console.log(`\n${checks.length - failed}/${checks.length} passed`);
