@@ -1,5 +1,5 @@
 ---
-name: qqq-react-live-lecture-visual-slides
+name: bsv-qqq-react-live-lecture-visual-slides
 description: Use this skill when the user wants to create a React-based slide system for live teaching, lectures, classroom explanation, online lessons, or instructor-led presentations (강의용 슬라이드, 발표 슬라이드, 수업 자료, 강의 화면). The slides use a "Modern Glassy Light" design — bright pastel-gradient background, glassmorphism cards (backdrop-filter blur), pastel glow box-shadows, and spring-pop animations (cubic-bezier overshoot). Large text (24px minimum, 48px+ titles), strong readability, and Pretendard font. The slides are visual support for an instructor's speech, not reading materials — the instructor explains, the slide supports dynamically. Trigger whenever the user mentions React 발표 슬라이드, 강의용 화면, 수업용 슬라이드, 트렌디한 발표 자료, 큰 글씨 발표 자료, online lecture slides, classroom slides, or wants slides that help an instructor explain while teaching, even if they don't say the word "React" explicitly.
 ---
 
