@@ -360,7 +360,14 @@ function A(el,name,o={}){
   if(dir) el.style.animationDirection=dir;
 }
 // 등장 전용: 1회 재생 후 정착 유지(절대 사라지지 않음)
-function enterA(el,name,o={}){ A(el,name,Object.assign({rep:1,fill:"forwards"},o)); }
+/* 등장 타임스케일 — 갤러리(카탈로그)는 1(느긋한 루프 영상 톤).
+   슬라이드에 심을 때는 QQQ.setEnterSpeed(0.12,0.7)로 줄여 0.6초 등장으로 쓴다.
+   (지속 모션 LIFE 는 A()를 직접 쓰므로 이 스케일의 영향을 받지 않는다.) */
+var __durScale=1, __delayScale=1;
+function enterA(el,name,o={}){
+  var d=(o.dur==null?5:o.dur)*__durScale, dl=(o.delay||0)*__delayScale;
+  A(el,name,Object.assign({},o,{rep:1,fill:"forwards",dur:d,delay:dl}));
+}
 // 자식들을 순차 등장
 function cascade(stage,name,o={}){
   const {gap=0.16,dur=5,base=0.1,origin,box,ease}=o;
@@ -709,7 +716,8 @@ function generic(c,s){
   if(cat==="A"){ cascade(s,"aRiseB",{gap:0.18,dur:5.5}); return; }
   if(cat==="B"){ cascade(s,"aPop",{gap:0.14}); return; }
   if(cat==="C"){ const k=kids(s);
-    if(k.length===2){ A(k[0],"aSlideL",{dur:5,delay:0.1}); A(k[1],"aSlideR",{dur:5,delay:0.1}); }
+    /* 등장은 1회성 In형으로 — 예전엔 A(rep:infinite)+루프형이라 이 계열만 끝없이 깜박였다 */
+    if(k.length===2){ enterA(k[0],"aSlideLIn",{delay:0.1}); enterA(k[1],"aSlideRIn",{delay:0.1}); }
     else cascade(s,"aPop",{gap:0.13}); return; }
   if(cat==="D"){ cascade(s,(n===20||n===25)?"aRiseT":"aSlideL",{gap:0.18}); return; }
   if(cat==="E"){ if(svg) pop(s,"circle",{gap:0.2}); else cascade(s,"aPop",{gap:0.14}); return; }

@@ -66,11 +66,32 @@ function GalleryComponent({ n }) {
 
 SKILL.md 2번 규칙 "같은 요소에 CSS animation과 FM을 동시에 걸지 마라"에 **안 걸린다.**
 
-- **FM**: 슬라이드/항목의 **등장**(`SlideMotion.enter`)을 바깥 `MotionItem`(컴포넌트를 감싼 래퍼)에 건다.
-- **키트 모션**: 컴포넌트 **내부 SVG/HTML 노드**(톱니 `<g>`, 선 `<path>`, 점 등)에 건다.
-- 서로 **다른 노드**이므로 갤러리의 "카드 등장 vs 내부 모션"이 공존하던 것과 동일하게 안전하다.
+- **키트 모션**: 컴포넌트 **내부 SVG/HTML 노드**(톱니 `<g>`, 선 `<path>`, 점 등)에 건다. 등장·지속 둘 다 키트가 맡는다.
+- **FM**: 이 컴포넌트에는 **등장을 걸지 않는다**. hover 같은 다른 용도만.
 
-즉: `<MotionItem enter><GalleryComponent n={27} /></MotionItem>` — 바깥은 FM으로 스르륵 등장, 안쪽 톱니는 키트로 무한 회전.
+### 등장은 한 겹만 — 두 번 깜박임 주의 (실제로 겪은 사고)
+
+바깥 `MotionItem`에 FM 등장을 걸면, 키트가 내부 요소를 순차 등장시키는 것과 **겹쳐서 두 번 나타난다**. 바깥 상자가 0.55초에 한 번 뜨고, 그 안 내용이 키트 기본값 5초에 걸쳐 처음부터 다시 들어오기 때문이다. 순수 React 템플릿(등장 한 겹)과 나란히 놓고 보면 이 컴포넌트들만 눈에 띄게 깜박인다.
+
+```jsx
+/* 이렇게 — 스텝 전에는 렌더하지 않고 자리만 잡아 둔다 */
+<div style={{minHeight:520,display:"flex",alignItems:"center",justifyContent:"center"}}>
+  {show ? <GalleryComponent n={27} active={true} /> : null}
+</div>
+
+/* 이렇게 하지 마라 — 등장이 두 겹이 된다 */
+<MotionItem enter><GalleryComponent n={27} /></MotionItem>
+```
+
+### 등장 속도는 슬라이드용으로 줄인다
+
+키트 기본 등장은 **5초**다 — 갤러리가 루프 영상처럼 느긋하게 보여 주려고 잡은 값이라, 슬라이드에서는 너무 느리다. 덱 초기화 때 한 번 호출한다.
+
+```js
+window.QQQ.setEnterSpeed(0.12, 0.7);  // 5s → 0.6s 등장, 순차 간격은 덜 줄여 차례로 들어오는 느낌 유지
+```
+
+지속 모션(LIFE — 톱니 회전·흐르는 점 등)은 `A()`를 직접 쓰므로 이 값의 영향을 받지 않는다.
 
 ## 가독성 / reduced-motion / 글씨 규칙
 

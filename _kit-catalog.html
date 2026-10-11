@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>키트 검증 카탈로그 — qqq-component-kit.js (스킬 산출 경로)</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<!-- 스킬이 실제 덱에 인라인하는 바로 그 키트. 클래식 스크립트 → window.QQQ -->
+<script src="references/qqq-component-kit.js"></script>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Pretendard,system-ui,sans-serif; color:#0F172A;
+    background:
+      radial-gradient(1100px 700px at 12% -8%, #DBEAFE 0%, transparent 60%),
+      radial-gradient(1000px 700px at 100% 0%, #CCFBF1 0%, transparent 55%),
+      radial-gradient(900px 700px at 50% 115%, #FCE7F3 0%, transparent 55%),
+      linear-gradient(180deg,#F8FAFF 0%, #F1F5F9 100%);
+    min-height:100vh; padding:40px 28px 80px;
+  }
+  header{max-width:1240px; margin:0 auto 26px}
+  h1{font-size:30px; font-weight:900; margin:0 0 8px; letter-spacing:-.02em}
+  header p{font-size:15px; color:#475569; margin:0; line-height:1.6}
+  header code{background:rgba(59,130,246,.1); padding:1px 6px; border-radius:6px; font-size:13px}
+  .grid{max-width:1240px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px;}
+  .card{
+    background:rgba(255,255,255,.72); backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.9); border-radius:18px;
+    box-shadow:0 8px 24px rgba(59,130,246,.09), 0 2px 6px rgba(15,23,42,.04);
+    padding:14px; display:flex; flex-direction:column; gap:9px;
+  }
+  .head{display:flex; align-items:center; gap:9px}
+  .num{width:30px; height:30px; flex:none; border-radius:9px; background:linear-gradient(135deg,#3B82F6,#0EA5E9);
+    color:#fff; font-weight:900; font-size:15px; display:grid; place-items:center;}
+  .names .en{font-size:13px; font-weight:800; line-height:1.15}
+  .names .ko{font-size:11.5px; color:#475569}
+  /* 갤러리와 동일한 stage — QQQ.mount가 .stage 클래스를 보장하지만 크기는 우리가 준다 */
+  .stage{
+    position:relative; height:200px; border-radius:14px; overflow:hidden;
+    background:linear-gradient(135deg,#F4F9FF 0%,#F2FCFB 100%);
+    border:1px solid rgba(59,130,246,.10);
+    display:flex; align-items:center; justify-content:center; padding:14px;
+  }
+  .stage > *{max-width:100%; max-height:100%;}
+</style>
+</head>
+<body>
+<header>
+  <h1>키트 검증 카탈로그 <span style="font-size:15px;font-weight:600;color:#475569">— 스킬 산출물(<code>qqq-component-kit.js</code>)로 직접 렌더</span></h1>
+  <p>이 페이지는 갤러리 내부 엔진을 쓰지 <b>않는다</b>. 스킬이 실제 강의 덱에 인라인하는 <code>references/qqq-component-kit.js</code>만 불러, 모든 컴포넌트를 <code>QQQ.mount(n, el)</code>로 그린다 — 실제 덱과 동일한 경로. <b>등장 후 정착해 사라지지 않고</b> 생명 레이어가 도는지 확인하는 용도.</p>
+</header>
+<div class="grid" id="grid"></div>
+<script>
+  (function(){
+    if(!window.QQQ){ document.getElementById("grid").innerHTML='<p style="color:#DC2626;font-weight:800">QQQ 키트 로드 실패 — references/qqq-component-kit.js 확인</p>'; return; }
+    var grid=document.getElementById("grid");
+    var nums=Object.keys(QQQ.byN).map(Number).sort(function(a,b){return a-b;});
+    nums.forEach(function(n){
+      var c=QQQ.byN[n];
+      var card=document.createElement("div"); card.className="card";
+      var head=document.createElement("div"); head.className="head";
+      head.innerHTML='<div class="num">'+n+'</div><div class="names"><div class="en">'+(c.en||"")+'</div><div class="ko">'+(c.ko||"")+'</div></div>';
+      var stage=document.createElement("div"); stage.className="stage";
+      card.appendChild(head); card.appendChild(stage); grid.appendChild(card);
+      // 스킬 경로 그대로: 키트가 innerHTML로 그리고 enter(1회)+live(영구) 적용
+      QQQ.mount(n, stage);
+    });
+    console.log("[kit-catalog] mounted "+nums.length+" components via QQQ.mount");
+  })();
+</script>
+</body>
+</html>
