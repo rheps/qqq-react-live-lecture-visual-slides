@@ -52,7 +52,9 @@ const api = [
   '  var reduce = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;',
   "  if(!reduce){ try{ if(el.dataset) delete el.dataset.animed; animate(c, el); }catch(e){} }",
   "}",
-  'if(typeof window!=="undefined") window.QQQ={ render:__qqqRender, mount:__qqqMount, byN:byN, applyMotion:animate };',
+  'if(typeof window!=="undefined") window.QQQ={ render:__qqqRender, mount:__qqqMount, byN:byN, applyMotion:animate,',
+  "  // 슬라이드용 등장 속도(기본은 갤러리 톤인 5초). 덱에서는 setEnterSpeed(0.12,0.7) → 0.6초 등장",
+  "  setEnterSpeed:function(dur,delay){ if(dur!=null)__durScale=dur; if(delay!=null)__delayScale=delay; } };",
 ].join("\n");
 
 const kit = header + "\n(function(){\n\n" + logic + "\n" + api + "\n\n})();\n";

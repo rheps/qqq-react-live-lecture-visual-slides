@@ -1,5 +1,5 @@
 ---
-name: qqq-react-live-lecture-visual-slides
+name: bsv-qqq-react-live-lecture-visual-slides
 description: Use this skill when the user wants to create a React-based slide system for live teaching, lectures, classroom explanation, online lessons, or instructor-led presentations (강의용 슬라이드, 발표 슬라이드, 수업 자료, 강의 화면). The slides use a "Modern Glassy Light" design — bright pastel-gradient background, glassmorphism cards (backdrop-filter blur), pastel glow box-shadows, and spring-pop animations (cubic-bezier overshoot). Large text (24px minimum, 48px+ titles), strong readability, and Pretendard font. The slides are visual support for an instructor's speech, not reading materials — the instructor explains, the slide supports dynamically. Trigger whenever the user mentions React 발표 슬라이드, 강의용 화면, 수업용 슬라이드, 트렌디한 발표 자료, 큰 글씨 발표 자료, online lecture slides, classroom slides, or wants slides that help an instructor explain while teaching, even if they don't say the word "React" explicitly.
 ---
 
@@ -30,6 +30,7 @@ Layer 1만 있고 Layer 2가 없으면 결과물이 "제목 + 텍스트 카드" 
 - 내용이 많으면 **글씨를 줄이지 말고 슬라이드와 Build 스텝을 늘린다.**
 - 긴 설명은 화면이 아니라 `notes` 필드(speaker notes)에 둔다.
 - 화면은 **3초 안에** 이해되어야 한다.
+- **개념은 비유가 아니라 정확한 용어로 쓴다.** 진열대·요리·문지기·"두 얼굴" 같은 은유·의인화로 개념을 대체하지 않는다(발표 화면에서 부정확·유치하고, 청중이 정작 원래 용어를 못 배운다). 구체적 예시(실제 사례·수치)는 허용. 상세·예시는 `references/component-selection-rules.md` §2-b. (사용자 확정)
 
 ## 언제 이 skill을 사용하는가
 
@@ -124,7 +125,8 @@ Layer 1만 있고 Layer 2가 없으면 결과물이 "제목 + 텍스트 카드" 
 
 - 덱에 `references/qqq-component-kit.js`를 **클래식 `<script>`로, React/Babel 앞에** 통째로 인라인한다 → `window.QQQ` 노출(키프레임도 자동 주입, 별도 CSS 불필요).
 - 시각 컴포넌트(Layer 2)는 빈 `<div ref>`에 `useEffect(()=>window.QQQ.mount(n, ref.current),[n])`로 그린다. 래퍼 `GalleryComponent({n})`을 한 번 정의해 재사용한다(코드는 `component-motion.md`).
-- **FM 등장은 컴포넌트를 감싼 바깥 `MotionItem`에, 키트 모션은 안쪽 SVG 노드에** — 서로 다른 노드라 2번 규칙(같은 요소에 CSS+FM 동시 금지)과 충돌하지 않는다. (`<MotionItem enter><GalleryComponent n={27}/></MotionItem>`)
+- **등장은 키트 한 겹만 — 바깥 `MotionItem`에 FM 등장을 겹치지 마라.** 키트가 이미 내부 요소를 순차 등장시키므로, 바깥까지 FM으로 등장시키면 "상자가 한 번 뜨고 안쪽이 또 뜨는" **두 번 깜박임**이 된다(실제 발생). 스텝 전에는 아예 렌더하지 말고 자리만 잡아 둔다: `<div style={{minHeight:520,…}}>{show ? <GalleryComponent n={27}/> : null}</div>`. 바깥 FM은 등장이 아닌 용도(hover 등)만.
+- **키트 등장 속도는 슬라이드용으로 줄인다** — 키트 기본값 5초는 갤러리(루프 영상) 톤이다. 덱 초기화 때 `window.QQQ.setEnterSpeed(0.12, 0.7)`을 한 번 호출해 0.6초 등장으로 맞춘다(순차 간격은 덜 줄여 차례로 들어오는 느낌 유지). 지속 모션(LIFE)은 이 값의 영향을 받지 않는다.
 - Babel은 **classic JSX 런타임**으로 컴파일해야 한다(automatic 런타임은 `import`를 내보내 깨진다 — `component-motion.md` 주의 참고).
 - `prefers-reduced-motion`이면 키트가 자동 정지. 컴포넌트 안 라벨 글씨는 등장 후 멈추므로 9번 규칙(읽는 글씨 지속 모션 금지)과도 맞는다.
 - 갤러리(모양·모션)를 고치면 **반드시 `node references/build-kit.js`**로 키트를 재생성한다(키트는 파생물, 단일 진실원천은 갤러리).
